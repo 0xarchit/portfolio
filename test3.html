@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteor Shower</title>
+    <style>
+        /* Reset and Body Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #000000, #546bab);
+            height: 100vh;
+        }
+
+        /* Meteor Shower */
+        .meteor-shower {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Prevent interaction */
+            overflow: hidden;
+        }
+
+        .meteor {
+            position: absolute;
+            top: -10%; /* Start above the viewport */
+            left: calc(var(--x) * 1%);
+            width: calc(2px * var(--size));
+            height: calc(50px * var(--size));
+            background: linear-gradient(45deg, #fff, rgba(255, 255, 255, 0));
+            transform: rotate(45deg);
+            animation: meteor 2s linear infinite;
+            animation-delay: calc(var(--delay) * 1s);
+        }
+
+        /* Meteor Animation */
+        @keyframes meteor {
+            0% {
+                transform: translateY(0) translateX(0) rotate(45deg);
+                opacity: 1;
+            }
+            70% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(-200px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Randomized Meteors */
+        .meteor:nth-child(1) { --x: 10; --size: 1; --delay: 0; }
+        .meteor:nth-child(2) { --x: 20; --size: 1.2; --delay: 0.5; }
+        .meteor:nth-child(3) { --x: 30; --size: 0.8; --delay: 1; }
+        .meteor:nth-child(4) { --x: 40; --size: 1.5; --delay: 1.5; }
+        .meteor:nth-child(5) { --x: 50; --size: 0.9; --delay: 2; }
+        .meteor:nth-child(6) { --x: 60; --size: 1.3; --delay: 2.5; }
+        .meteor:nth-child(7) { --x: 70; --size: 1.1; --delay: 3; }
+        .meteor:nth-child(8) { --x: 80; --size: 0.7; --delay: 3.5; }
+        .meteor:nth-child(9) { --x: 90; --size: 1.4; --delay: 4; }
+        .meteor:nth-child(10) { --x: 95; --size: 1; --delay: 4.5; }
+    </style>
+</head>
+<body>
+    <div class="meteor-shower">
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+        <div class="meteor"></div>
+    </div>
+</body>
+</html>

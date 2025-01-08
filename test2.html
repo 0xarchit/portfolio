@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compact Meteor Shower</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(to bottom, #000000, #546bab);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+            color: #E5CC64;
+            text-align: center;
+        }
+
+        .hero-section .container h1 {
+            font-size: 3rem;
+        }
+
+        /* Meteor Shower */
+        .meteor-shower {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .meteor {
+            position: absolute;
+            width: 2px;
+            height: 50px;
+            background: linear-gradient(45deg, #fff, rgba(255, 255, 255, 0));
+            transform: rotate(45deg);
+            opacity: 0;
+            animation: meteor 2s linear infinite;
+        }
+
+        /* Keyframes for Meteors */
+        @keyframes meteor {
+            0% {
+                transform: translateY(-100%) translateX(0) rotate(45deg);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(-200px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Generate Random Meteors */
+        .meteor:nth-child(1) { top: -10%; left: 5%; animation-delay: 0s; }
+        .meteor:nth-child(2) { top: -20%; left: 15%; animation-delay: 0.5s; }
+        .meteor:nth-child(3) { top: -15%; left: 25%; animation-delay: 1s; }
+        .meteor:nth-child(4) { top: -30%; left: 35%; animation-delay: 1.5s; }
+        .meteor:nth-child(5) { top: -5%; left: 50%; animation-delay: 2s; }
+        .meteor:nth-child(6) { top: -25%; left: 60%; animation-delay: 2.5s; }
+        .meteor:nth-child(7) { top: -10%; left: 75%; animation-delay: 3s; }
+        .meteor:nth-child(8) { top: -35%; left: 85%; animation-delay: 3.5s; }
+        .meteor:nth-child(9) { top: -20%; left: 90%; animation-delay: 4s; }
+        .meteor:nth-child(10) { top: -15%; left: 10%; animation-delay: 4.5s; }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <h1>Welcome to the Meteor Shower</h1>
+        </div>
+        <div class="meteor-shower">
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+            <div class="meteor"></div>
+        </div>
+    </div>
+</body>
+</html>
