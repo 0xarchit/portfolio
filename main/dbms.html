@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBMS Theory Assignment</title>
+    <style>
+	body {
+            font-family: Poppins, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 25px;
+        }
+        pre {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>DBMS Theory Assignment</h1>
+
+    <h2>Q1. E-R Diagram for University Registrar's Office</h2>
+    <pre>
+Assumptions:
+- A course can have multiple prerequisites.
+- A course offering can have multiple instructors.
+- A student can enroll in multiple courses and receive grades.
+
+Entities:
+- Courses (course_number, title, credits, syllabus)
+- Course_Offerings (course_number, year, semester, section_number, timings, classroom)
+- Students (student_id, sname, program)
+- Instructors (empid, ename, department, title)
+
+Relationships:
+- Courses to Course_Offerings: 1-to-many
+- Course_Offerings to Instructors: many-to-many
+- Students to Course_Offerings: many-to-many with attribute 'grade'
+    </pre>
+
+    <h2>Q2. Relational Algebra Queries</h2>
+    <pre>
+a. π_sname(σ_color='red'(Suppliers ⨝ Catalog ⨝ Parts))
+b. π_sid(σ_color='red' ∨ color='green'(Suppliers ⨝ Catalog ⨝ Parts)) ∪ π_sid(σ_address='221 packer Av'(Suppliers))
+    </pre>
+
+    <h2>Q3. NHL Database Design</h2>
+    <pre>
+i. ER Diagram:
+Entities:
+- Teams (team_id, name, city, coach, captain)
+- Players (player_id, name, position, skill_level)
+- Games (game_id, host_team, guest_team, date, score)
+
+Relationships:
+- Teams to Players: 1-to-many
+- Teams to Games: many-to-many
+
+ii. Tables:
+Teams(team_id, name, city, coach, captain)
+Players(player_id, name, position, skill_level, team_id)
+Games(game_id, host_team, guest_team, date, score)
+
+iii. Relational Algebra:
+iv. π_name(σ_city='Chandigarh'(Teams))
+v. π_name(σ_skill_level!='excellent'(Players) ∩ σ_player_id=captain(Teams))
+vi. π_host_team,guest_team(σ_date='first league match date'(Games))
+    </pre>
+
+    <h2>Q4. Foreign Keys</h2>
+    <pre>
+STUDENT(Ssn, Name, Major, Bdate)
+COURSE(Course#, Cname, Dept)
+ENROLL(Ssn REFERENCES STUDENT(Ssn), Course# REFERENCES COURSE(Course#), Quarter, Grade)
+BOOK_ADOPTION(Course# REFERENCES COURSE(Course#), Quarter, Book_isbn REFERENCES TEXT(Book_isbn))
+TEXT(Book_isbn, Book_title, Publisher, Author)
+    </pre>
+
+    <h2>Q5. Candidate Keys</h2>
+    <pre>
+Candidate Keys:
+- (Univ_Section#)
+- (Course#, Semester, Building_code, Room#, Time_period, Weekdays)
+Assumptions:
+- Univ_Section# is unique across all semesters.
+- Combination of course details ensures uniqueness per class instance.
+    </pre>
+
+    <h2>Q6. Relational Database Schema</h2>
+    <pre>
+a. CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    shipping_address VARCHAR(255)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT REFERENCES Customers(customer_id),
+    order_date DATE
+);
+
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    price DECIMAL(10, 2),
+    stock INT
+);
+
+CREATE TABLE Order_Items (
+    order_id INT REFERENCES Orders(order_id),
+    product_id INT REFERENCES Products(product_id),
+    quantity INT,
+    PRIMARY KEY (order_id, product_id)
+);
+
+b. SELECT * FROM Customers WHERE email = 'example@example.com';
+SELECT SUM(quantity * price) AS total FROM Order_Items JOIN Products ON Order_Items.product_id = Products.product_id WHERE order_id = 1;
+
+c. Indexes on: Customers(email), Products(name), Orders(order_date)
+    </pre>
+
+    <h2>Q7. Relational Algebra</h2>
+    <pre>
+a. π_Ename,Dname(σ_Sal>500(EMP ⨝ Dept))
+b. EMP ⨝ Dept ON Deptno AND SSNo
+    </pre>
+
+    <h2>Q8. Employee Database</h2>
+    <pre>
+a. ER Model:
+Entities:
+- Employee(person-name, street, city) PK: person-name
+- Works(person-name REFERENCES Employee(person-name), company-name, salary) PK: person-name
+- Company(company-name, city) PK: company-name
+- Managers(person-name REFERENCES Employee(person-name), manager-name REFERENCES Employee(person-name)) PK: person-name
+
+b. π_person-name(σ_company-name='First Bank Corporation'(Works))
+
+c. π_person-name,city(Employee ⨝ Works ON Employee.person-name = Works.person-name WHERE company-name='First Bank Corporation')
+
+d. π_person-name(Employee) - π_person-name(σ_company-name='First Bank Corporation'(Works))
+
+e. π_person-name(σ_salary>10000(Works))
+
+f. π_person-name(σ_salary > ALL(σ_company-name='Small Bank Corporation'(Works.salary))(Works))
+    </pre>
+
+    <h2>Q9. E-Commerce ERD</h2>
+    <pre>
+Entities:
+- Products(product_id, name, price, stock)
+- Customers(customer_id, name, email, shipping_address)
+- Orders(order_id, customer_id REFERENCES Customers(customer_id), order_date)
+- Order_Items(order_id REFERENCES Orders(order_id), product_id REFERENCES Products(product_id), quantity)
+    </pre>
+
+    <h2>Q10. NULL Values in Keys</h2>
+    <pre>
+NULL values should not be part of Primary or Candidate Keys because keys must uniquely identify records, and NULL implies absence of value, breaking uniqueness.
+ER Diagram and Relational Schema would exclude nullable attributes from key definitions.
+    </pre>
+
+    <h2>Q11. Relational Algebra Queries</h2>
+    <pre>
+a. π_Pno(σ_COUNT(Jno)=2(SUPPLY))
+b. π_Sname(σ_COUNT(Pno)>2 ∧ Jno='J1'(SUPPLY ⨝ SUPPLIER))
+c. π_Pno(π_Sno,Pno(SUPPLY) ÷ π_Sno(SUPPLIER))
+d. π_Jname(σ_Sno='S1'(SUPPLY ⨝ PROJECT))
+e. π_Sname(σ_COUNT(DISTINCT Pno)≥2 ∧ COUNT(DISTINCT Jno)≥2(SUPPLY ⨝ SUPPLIER))
+    </pre>
+
+    <h2>Q12. ER Diagram and Relational Schema</h2>
+    <pre>
+Entities:
+- Entity1(attr1, attr2)
+- Entity2(attr3, attr4)
+
+Relationships:
+- Relationship1 between Entity1 and Entity2 (Cardinality: Many-to-One)
+
+Relational Schema:
+Entity1(attr1 PK, attr2)
+Entity2(attr3 PK, attr4, attr1 FK REFERENCES Entity1(attr1))
+    </pre>
+
+    <h2>Q13. Sports Team ER Diagram</h2>
+    <pre>
+Entities:
+- Team(team_id, name)
+- Match(match_id, date, score)
+- Player(player_id, name, stats)
+- PlayerMatch(player_id REFERENCES Player(player_id), match_id REFERENCES Match(match_id), performance)
+
+Derived Attributes:
+- Player.stats (derived from PlayerMatch.performance)
+    </pre>
+
+    <h2>Q14. Hospital ER Diagram</h2>
+    <pre>
+Entities:
+- Patient(patient_id, name)
+- Doctor(doctor_id, name)
+- Test(test_id, name, result)
+- Log(patient_id REFERENCES Patient(patient_id), test_id REFERENCES Test(test_id), date)
+
+Relationships:
+- Patient to Doctor: Many-to-Many
+- Patient to Test: Many-to-Many
+    </pre>
+
+    <h2>Q15. Banking Database Queries</h2>
+    <pre>
+a. π_Cust_name(Borrower ⨝ Depositor)
+b. γ_Branch_city; COUNT(Cust_name)(Customer ⨝ Branch)
+c. π_Cust_name, Loan_number(Borrower)
+    </pre>
+
+    <h2>Q16. Relational Algebra Queries</h2>
+    <pre>
+a. π_AccountNumber(σ_Date NOT BETWEEN '2000-01-01' AND '2000-01-31'(Deposit))
+b. π_AccountNumber(AccountHolder) - π_AccountNumber(Deposit ∪ Withdrawal WHERE Date BETWEEN '2000-01-01' AND '2000-01-31')
+c. π_AccountNumber, Name(σ_OpeningBalance >= 9999 ∧ CityCode='ROHTAK'(AccountHolder))
+d. π_CityName(σ_StateCode='HARYANA'(Cities))
+e. π_AccountNumber(AccountHolder ⨝ Cities WHERE StateCode='HARYANA')
+f. π_CityName(Cities) - π_CityName(AccountHolder ⨝ Cities)
+g. π_AccountNumber(AccountHolder) - π_AccountNumber(Deposit ∪ Withdrawal)
+h. π_CityName, PinCode(σ_StateName='RAJASTHAN'(Cities))
+    </pre>
+
+    <h2>Q17. Professor and Committees</h2>
+    <pre>
+a. π_profname(σ_commname IN (π_commname(σ_profname='David'(committee)))(committee))
+b. π_profname(σ_commname ⊆ (π_commname(σ_profname='David'(committee)))(committee))
+c. π_profname(σ_commname = (π_commname(σ_profname='David'(committee)))(committee))
+d. π_profname(σ_building ⊆ (π_building(σ_profname='David'(department)))(department))
+    </pre>
+
+    <h2>Q18. Chemical Reaction System</h2>
+    <pre>
+Entities:
+- Chemical(chemical_code, name)
+- Condition(condition_code, description)
+- Reaction(reaction_number, reactants, products, condition_code REFERENCES Condition(condition_code))
+
+Relationships:
+- Reactants to Reaction: Many-to-Many
+- Products to Reaction: Many-to-Many
+    </pre>
+
+    <h2>Q19. Manufacturing Industry ER Diagram</h2>
+    <pre>
+Entities:
+- Labour(labour_id, name)
+- Job(job_id, basic_pay, da_rate)
+- Work(labour_id REFERENCES Labour(labour_id), job_id REFERENCES Job(job_id), date)
+
+Relationships:
+- Labour to Job: Many-to-Many with attribute 'date'
+    </pre>
+    <h2>Q20. Convert ER Diagram to Relational Schema</h2>
+    <pre>
+Entities:
+- EntityA(A1 PK, A2)
+- EntityB(B1 PK, B2)
+- EntityC(C1 PK, C2)
+
+Relationships:
+- R1 between EntityA and EntityB (Cardinality: One-to-Many)
+- R2 between EntityB and EntityC (Cardinality: Many-to-Many with attribute 'R2_attr')
+
+Relational Schema:
+EntityA(A1 PK, A2)
+EntityB(B1 PK, B2, A1 FK REFERENCES EntityA(A1))
+EntityC(C1 PK, C2)
+R2(B1 FK REFERENCES EntityB(B1), C1 FK REFERENCES EntityC(C1), R2_attr)
+    </pre>
+
+    <h2>Q21. Customer and Loan Database Design</h2>
+    <pre>
+(i) Representing the company as a relationship is better because it allows for more flexibility in managing companies independently of customers.
+
+(ii) The best way is to make the loan a separate entity set and define a relationship between it and the customer. This approach supports multiple loans per customer and provides better scalability.
+    </pre>
+
+    <h2>Q22. Bus Reservation System</h2>
+    <pre>
+(a) ER Diagram:
+Entities:
+- Bus(bus_number PK, class, capacity)
+- Place(place_name PK, latitude, longitude)
+- Route(route_id PK, start_place REFERENCES Place(place_name), end_place REFERENCES Place(place_name))
+- Schedule(schedule_id PK, route_id REFERENCES Route(route_id), date, start_time)
+- Member(member_id PK, first_name, last_name)
+- Reservation(reservation_id PK, member_id REFERENCES Member(member_id), schedule_id REFERENCES Schedule(schedule_id), credit_card, passengers, reservation_datetime)
+
+Relationships:
+- Bus to Schedule: One-to-Many
+- Route to Schedule: One-to-Many
+- Member to Reservation: One-to-Many
+
+(b) Relational Schema:
+Bus(bus_number PK, class, capacity)
+Place(place_name PK, latitude, longitude)
+Route(route_id PK, start_place REFERENCES Place(place_name), end_place REFERENCES Place(place_name))
+Schedule(schedule_id PK, route_id REFERENCES Route(route_id), date, start_time, bus_number REFERENCES Bus(bus_number))
+Member(member_id PK, first_name, last_name)
+Reservation(reservation_id PK, member_id REFERENCES Member(member_id), schedule_id REFERENCES Schedule(schedule_id), credit_card, passengers, reservation_datetime)
+    </pre>
+
+    <h2>Q23. University ER Diagram</h2>
+    <pre>
+Entities:
+- School(school_id PK, director_name)
+- Staff(staff_id PK, name, type)
+- Course(course_id PK, name)
+- Subject(subject_id PK, name)
+- Teacher(teacher_id PK, name)
+- Student(student_id PK, name)
+
+Relationships:
+- School to Staff: One-to-Many
+- School to Course: One-to-Many
+- Course to Subject: One-to-Many
+- Subject to Teacher: Many-to-Many
+- Subject to Student: Many-to-Many
+    </pre>
+
+    <h2>Q24. Minimum Number of Tables</h2>
+    <pre>
+Minimum number of tables: 3
+- Table for E1
+- Table for E2
+- Table for R2 (many-to-many relationship)
+    </pre>
+
+    <h2>Q25. Three-Tier DBMS Architecture</h2>
+    <pre>
+Three-tier architecture:
+1. Presentation Layer: User interface for traders.
+2. Application Layer: Business logic and transaction processing.
+3. Data Layer: Database management system.
+
+Benefits:
+- Data independence: Changes in one layer do not affect others.
+- Scalability: Each layer can be scaled independently.
+- Security: Centralized control over data access.
+
+Database Development Life Cycle (DDLC):
+1. Requirements Analysis
+2. Conceptual Design
+3. Logical Design
+4. Physical Design
+5. Implementation
+6. Testing
+7. Deployment
+8. Maintenance
+    </pre>
+
+    <h2>Q26. File-Processing System Disadvantages</h2>
+    <pre>
+Disadvantages:
+- Data redundancy and inconsistency
+- Difficulty in accessing data
+- Limited data sharing
+- Lack of security
+
+Relevance to video data:
+- Metadata (e.g., title, tags) benefits from structured storage for efficient querying.
+- Video data itself is better stored in a file system due to its size and streaming requirements.
+    </pre>
+
+    <h2>Q27. Web-Based Airline Reservation System</h2>
+    <pre>
+Best DBMS architecture: Client-Server
+Reason: Centralized database ensures consistency and security while supporting concurrent access.
+
+Other architectures:
+- File-based: Inefficient for concurrent access and complex queries.
+- Distributed: Overly complex for this use case without clear benefits.
+    </pre>
+
+    <h2>Q28. Minimum Number of Tables</h2>
+    <pre>
+(a) Minimum number of tables: 3
+- Table for M
+- Table for N
+- Table for P
+
+(b) Correct attribute set: {M1, P1, N1}
+Explanation: Represents the many-to-many relationship between M and N via P.
+    </pre>
+
+    <h2>Q29. Organization ER Diagram</h2>
+    <pre>
+Entities:
+- Project(project_id PK, client_id REFERENCES Client(client_id))
+- Employee(employee_id PK, name)
+- Client(client_id PK, name)
+- Item(item_id PK, name)
+
+Relationships:
+- Project to Employee: Many-to-Many
+- Project to Item: Many-to-Many
+
+Relational Schema:
+Project(project_id PK, client_id REFERENCES Client(client_id))
+Employee(employee_id PK, name)
+Client(client_id PK, name)
+Item(item_id PK, name)
+Project_Employee(project_id REFERENCES Project(project_id), employee_id REFERENCES Employee(employee_id))
+Project_Item(project_id REFERENCES Project(project_id), item_id REFERENCES Item(item_id))
+    </pre>
+
+    <h2>Q30. Graph Queries</h2>
+    <pre>
+(a) List all vertices adjacent to a given vertex: Can be expressed.
+(b) List all vertices which have self loops: Can be expressed.
+(c) List all vertices which belong to cycles of less than three vertices: Can be expressed.
+(d) List all vertices reachable from a given vertex: Cannot be expressed with constant-length relational algebra.
+    </pre>
+
+</body>
+</html>
