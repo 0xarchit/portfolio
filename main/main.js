@@ -71,7 +71,7 @@ const projects = [
         description: 'Portfolio website built with HTML, CSS, JS and Bootstrap to showcase my work.',
         image: './portfolio.jpg',
         github: 'https://github.com/0xarchit',
-        live: 'https://0xarchit.pages.dev'
+        live: 'https://0xarchit.is-a.dev'
     }
 ];
 
@@ -80,7 +80,7 @@ const socialLinks = [
     { icon: 'bi-github', url: 'https://github.com/0xarchit' },
     { icon: 'bi-linkedin', url: 'https://linkedin.com/in/0xarchit' },
     { icon: 'bi-twitter', url: 'https://x.com/0xarchit' },
-    { icon: 'bi-envelope', url: 'mailto:0xarchit@gmail.com' }
+    { icon: 'bi-envelope', url: 'mailto:mail@0xarchit.is-a.dev' }
 ];
 
 // Typing
