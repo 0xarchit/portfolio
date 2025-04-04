@@ -23,7 +23,9 @@ export const Header = () => {
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
               aria-label="GitHub Profile"
             >
-              <Github className="w-5 h-5" aria-hidden="true" />
+              <Github className="w-5 h-5">
+                <title>GitHub Icon</title>
+              </Github>
             </motion.a>
             <motion.a
               href="https://www.linkedin.com/in/0xarchit/"
@@ -33,7 +35,9 @@ export const Header = () => {
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
               aria-label="LinkedIn Profile"
             >
-              <Linkedin className="w-5 h-5" aria-hidden="true" />
+              <Linkedin className="w-5 h-5">
+                <title>LinkedIn Icon</title>
+              </Linkedin>
             </motion.a>
             <motion.a
               href="https://x.com/0xarchit"
@@ -43,7 +47,9 @@ export const Header = () => {
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
               aria-label="Twitter Profile"
             >
-              <Twitter className="w-5 h-5" aria-hidden="true" />
+              <Twitter className="w-5 h-5">
+                <title>Twitter Icon</title>
+              </Twitter>
             </motion.a>
             <motion.a
               href="mailto:mail@0xarchit.is-a.dev"
@@ -53,7 +59,9 @@ export const Header = () => {
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
               aria-label="Email Contact"
             >
-              <Mail className="w-5 h-5" aria-hidden="true" />
+              <Mail className="w-5 h-5">
+                <title>Email Icon</title>
+              </Mail>
             </motion.a>
           </div>
         </div>

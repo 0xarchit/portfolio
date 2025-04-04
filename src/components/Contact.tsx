@@ -19,8 +19,11 @@ export const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 md:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              aria-label="GitHub Profile"
             >
-              <Github className="w-5 h-5 md:w-6 md:h-6" />
+              <Github className="w-5 h-5 md:w-6 md:h-6">
+                <title>GitHub Icon</title>
+              </Github>
             </motion.a>
             <motion.a
               whileHover={{ scale: 1.1, rotate: 5 }}
@@ -28,8 +31,11 @@ export const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 md:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              aria-label="LinkedIn Profile"
             >
-              <Linkedin className="w-5 h-5 md:w-6 md:h-6" />
+              <Linkedin className="w-5 h-5 md:w-6 md:h-6">
+                <title>LinkedIn Icon</title>
+              </Linkedin>
             </motion.a>
             <motion.a
               whileHover={{ scale: 1.1, rotate: 5 }}
@@ -37,15 +43,21 @@ export const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 md:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              aria-label="Twitter Profile"
             >
-              <Twitter className="w-5 h-5 md:w-6 md:h-6" />
+              <Twitter className="w-5 h-5 md:w-6 md:h-6">
+                <title>Twitter Icon</title>
+              </Twitter>
             </motion.a>
             <motion.a
               whileHover={{ scale: 1.1, rotate: 5 }}
               href="mailto:mail@0xarchit.is-a.dev"
               className="p-2 md:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              aria-label="Email Contact"
             >
-              <Mail className="w-5 h-5 md:w-6 md:h-6" />
+              <Mail className="w-5 h-5 md:w-6 md:h-6">
+                <title>Email Icon</title>
+              </Mail>
             </motion.a>
           </div>
         </GlassCard>
