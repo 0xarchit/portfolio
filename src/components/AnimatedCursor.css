@@ -1,7 +1,7 @@
 .animated-cursor {
   position: fixed;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   background-image: url("/custom_cur.webp");
   background-size: contain;
   background-repeat: no-repeat;
