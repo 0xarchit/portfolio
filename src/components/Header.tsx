@@ -21,8 +21,9 @@ export const Header = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, rotate: 5 }}
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
+              aria-label="GitHub Profile"
             >
-              <Github className="w-5 h-5" />
+              <Github className="w-5 h-5" aria-hidden="true" />
             </motion.a>
             <motion.a
               href="https://www.linkedin.com/in/0xarchit/"
@@ -30,8 +31,9 @@ export const Header = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, rotate: 5 }}
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
+              aria-label="LinkedIn Profile"
             >
-              <Linkedin className="w-5 h-5" />
+              <Linkedin className="w-5 h-5" aria-hidden="true" />
             </motion.a>
             <motion.a
               href="https://x.com/0xarchit"
@@ -39,8 +41,9 @@ export const Header = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, rotate: 5 }}
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
+              aria-label="Twitter Profile"
             >
-              <Twitter className="w-5 h-5" />
+              <Twitter className="w-5 h-5" aria-hidden="true" />
             </motion.a>
             <motion.a
               href="mailto:mail@0xarchit.is-a.dev"
@@ -48,8 +51,9 @@ export const Header = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, rotate: 5 }}
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
+              aria-label="Email Contact"
             >
-              <Mail className="w-5 h-5" />
+              <Mail className="w-5 h-5" aria-hidden="true" />
             </motion.a>
           </div>
         </div>
