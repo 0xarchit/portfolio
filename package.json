@@ -1,15 +1,16 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "0xarchit",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --emptyOutDir",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
