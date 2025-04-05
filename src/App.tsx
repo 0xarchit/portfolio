@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-// Use lazy loading for components that aren't immediately visible
 const About = lazy(() => import('./components/About').then(module => ({ default: module.About })));
 const Skills = lazy(() => import('./components/Skills').then(module => ({ default: module.Skills })));
 const Projects = lazy(() => import('./components/Projects').then(module => ({ default: module.Projects })));
@@ -14,7 +13,13 @@ function App() {
       <AnimatedCursor />
       <Header />
       <Hero />
-      <Suspense fallback={<div className="h-screen"></div>}>
+      <Suspense
+        fallback={
+          <div className="h-screen flex items-center justify-center bg-[#112240]">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#64FFDA]"></div>
+          </div>
+        }
+      >
         <About />
         <Skills />
         <Projects />
