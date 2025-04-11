@@ -35,7 +35,7 @@ const projects = [
     icon: Search,
     color: 'pink',
     github: 'https://github.com/0xarchit',
-    demo: '#'
+    demo: 'https://fake-news.0xarchit.is-a.dev'
   }
 ];
 
