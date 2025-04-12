@@ -16,7 +16,7 @@ const skills = [
   {
     name: 'Mobile Development',
     icon: TabletSmartphone,
-    skills: ['React Native', 'CapacitorJs', 'Tailwind CSS']
+    skills: ['React Native', 'CapacitorJs']
   },
   {
     name: 'UI/UX Design',
@@ -41,7 +41,7 @@ const skills = [
   {
     name: 'Programming & Scripting Languages',
     icon: Code,
-    skills: ['JavaScript', 'TypeScript', 'Python', 'Bash', 'PHP']
+    skills: ['JavaScript', 'TypeScript', 'Python', 'Java', 'Bash']
   },
   {
     name: 'Security',
@@ -51,7 +51,7 @@ const skills = [
   {
     name: 'Tools & Others',
     icon: Cpu,
-    skills: ['SEO', 'Git', 'VS Code', 'Postman', 'BurpSuite', 'Discord', 'Notion', 'Android Studio', 'Jupyter Notebook', 'Google Colab']
+    skills: ['SEO', 'Git', 'VS Code', 'Postman', 'BurpSuite', 'Discord', 'Notion', 'Android Studio', 'Jupyter Notebook', 'Google Colab', 'Open Source']
   }
 ];
 
