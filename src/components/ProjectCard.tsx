@@ -47,7 +47,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#64FFDA]/10 text-[#64FFDA] hover:bg-[#64FFDA]/20 transition-colors"
         >
           <Github className="w-5 h-5" />
-          Repository
+          Docs and Source
         </motion.a>
         <motion.a
           whileHover={{ scale: 1.05 }}

@@ -34,8 +34,8 @@ const projects = [
     description: 'Advanced system for verifying news authenticity using AI and machine learning. Features real-time fact-checking and source verification.',
     icon: Search,
     color: 'pink',
-    github: 'https://github.com/0xarchit',
-    demo: 'https://news-verification-system.pages.dev'
+    github: 'https://docs.0xarchit.is-a.dev/fakenews/',
+    demo: 'https://news-verify.0xarchit.is-a.dev'
   }
 ];
 
