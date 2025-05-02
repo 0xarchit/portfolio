@@ -18,7 +18,7 @@ const projects = [
     description: 'Next-generation AI chat Bot for coding assistance with advanced context understanding. Features real-time responses and memory management.',
     icon: Bot,
     color: 'teal',
-    github: 'https://github.com/0xarchit',
+    github: 'https://github.com/0xarchit/CodeArc',
     demo: 'https://codearc.pages.dev'
   },
   {
