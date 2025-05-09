@@ -1,16 +1,35 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ScrollText, Bot, Globe, Search } from 'lucide-react';
+import { ScrollText, Bot, GraduationCap, Search } from 'lucide-react';
 import { ProjectCard } from './ProjectCard';
 import { ComingSoonModal } from './ComingSoonModal';
 
 const projects = [
   {
+    title: 'AI News Verification',
+    description: 'Advanced system for verifying news authenticity using AI and machine learning. Features real-time fact-checking and source verification.',
+    icon: Search,
+    color: 'pink',
+    git: '#',
+    docs: 'https://docs.0xarchit.is-a.dev/fakenews/',
+    demo: 'https://news-verify.0xarchit.is-a.dev'
+  },
+  {
+    title: 'LearnTrack',
+    description: 'LearnTrack is a comprehensive learning management system designed for educational institutions with role-based access for students, faculty, and administrators.',
+    icon: GraduationCap,
+    color: 'purple',
+    git: 'https://github.com/0xarchit/LearnTrack',
+    docs: 'https://docs.0xarchit.is-a.dev/learntrack/',
+    demo: 'https://learntrack.pages.dev'
+  },
+  {
     title: 'Scroll2PDF',
     description: 'Transform lengthy web content into well-formatted PDF documents with a single click. Built with advanced PDF processing algorithms.',
     icon: ScrollText,
     color: 'blue',
-    github: 'https://github.com/0xarchit/Scroll-To-Pdf',
+    git: 'https://github.com/0xarchit/Scroll-To-Pdf',
+    docs: 'https://docs.0xarchit.is-a.dev/scroll2pdf/',
     demo: 'https://github.com/bitbotsofficial/Scroll-To-Pdf/releases/tag/1.0.0'
   },
   {
@@ -18,24 +37,9 @@ const projects = [
     description: 'Next-generation AI chat Bot for coding assistance with advanced context understanding. Features real-time responses and memory management.',
     icon: Bot,
     color: 'teal',
-    github: 'https://github.com/0xarchit/CodeArc',
+    git: 'https://github.com/0xarchit/CodeArc',
+    docs: 'https://docs.0xarchit.is-a.dev/codearc/',
     demo: 'https://codearc.pages.dev'
-  },
-  {
-    title: 'Portfolio Website',
-    description: 'A modern, interactive portfolio showcasing my projects and skills. Built with React, Framer Motion, and Tailwind CSS.',
-    icon: Globe,
-    color: 'purple',
-    github: 'https://github.com/0xarchit',
-    demo: 'https://0xarchit.is-a.dev'
-  },
-  {
-    title: 'AI News Verification',
-    description: 'Advanced system for verifying news authenticity using AI and machine learning. Features real-time fact-checking and source verification.',
-    icon: Search,
-    color: 'pink',
-    github: 'https://docs.0xarchit.is-a.dev/fakenews/',
-    demo: 'https://news-verify.0xarchit.is-a.dev'
   }
 ];
 
@@ -54,10 +58,15 @@ export const Projects = () => {
           >
             Featured Projects
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {projects.map((project) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">            {projects.map((project) => {
               const handleDemoClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
                 if (project.demo === '#') {
+                  e.preventDefault();
+                  setShowComingSoonModal(true);
+                }
+              };
+              const handleGitClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+                if (project.git === '#') {
                   e.preventDefault();
                   setShowComingSoonModal(true);
                 }
@@ -66,7 +75,8 @@ export const Projects = () => {
                 <ProjectCard 
                   key={project.title} 
                   {...project} 
-                  onDemoClick={handleDemoClick} 
+                  onDemoClick={handleDemoClick}
+                  onGitClick={handleGitClick}
                 />
               );
             })}

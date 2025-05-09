@@ -28,7 +28,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({ onClose }) => 
           </button>
           <h2 className="text-2xl font-bold text-[#CCD6F6] mb-4">Coming Soon</h2>
           <p className="text-[#8892B0]">
-            This project is under development. Please check back later!
+            This is currently unavailable. Please check back later!
           </p>
         </GlassCard>
       </motion.div>
