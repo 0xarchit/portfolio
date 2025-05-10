@@ -15,6 +15,18 @@
     user-drag: none;
     scrollbar-width: none;
   }
+
+  /* Fix white line issue on edges */
+  html,
+  body {
+    @apply overflow-x-hidden m-0 p-0;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  body {
+    position: relative;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -36,4 +48,25 @@
 /* Custom shadow class for containers */
 .custom-shadow {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.animated-cursor {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  background-image: url("/custom_cur.webp");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  filter: drop-shadow(0 0 5px #39ff14);
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  top: var(--cursor-y, 0px);
+  left: var(--cursor-x, 0px);
+}
+
+.animated-cursor.visible {
+  opacity: 1;
 }

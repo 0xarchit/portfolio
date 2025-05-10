@@ -1,0 +1,22 @@
+/* Extra fixes for edge issues */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: #0a192f;
+}
+
+/* Fix for mobile devices that might show white edges */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  box-shadow: 0 0 0 2px #0a192f;
+  z-index: 9999;
+}

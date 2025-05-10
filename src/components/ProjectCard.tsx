@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, ExternalLink, FileText, DivideIcon as LucideIcon } from 'lucide-react';
 import { GlassCard } from './GlassCard';
@@ -22,7 +21,7 @@ const colorMap = {
   pink: 'bg-[#64FFDA]/10 text-[#64FFDA]'
 };
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({
+export const ProjectCard = ({
   title,
   description,
   icon: Icon,
@@ -32,7 +31,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   demo,
   onDemoClick,
   onGitClick
-}) => {
+}: ProjectCardProps) => {
   return (
     <GlassCard className="backdrop-blur-lg bg-[#233554]/10">
       <div className="flex items-center gap-4 mb-4">

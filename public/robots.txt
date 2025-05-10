@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://0xarchit.is-a.dev/sitemap.xml

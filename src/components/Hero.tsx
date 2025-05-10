@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Blob } from './Blob';
 import { Download } from 'lucide-react';
+import Link from 'next/link';
 
 export const Hero = () => {
   return (
@@ -52,18 +53,18 @@ export const Hero = () => {
             transition={{ delay: 0.6 }}
             className="flex flex-wrap gap-4"
           >
-            <a
+            <Link
               href="#projects"
               className="w-full sm:w-auto px-6 py-3 border-2 border-[#64FFDA] text-[#64FFDA] hover:bg-[#64FFDA]/10 rounded-lg font-semibold transition-colors text-center"
             >
               View Projects
-            </a>
-            <a
+            </Link>
+            <Link
               href="#contact"
               className="w-full sm:w-auto px-6 py-3 bg-[#64FFDA]/10 text-[#64FFDA] hover:bg-[#64FFDA]/20 rounded-lg font-semibold transition-colors text-center"
             >
               Contact Me
-            </a>
+            </Link>
             <motion.a
               href="https://files.0xarchit.is-a.dev/0:/archit_resume.pdf"
               download

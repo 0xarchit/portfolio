@@ -1,14 +1,19 @@
+"use client";
 import { useEffect, useRef, useState } from 'react';
-import './AnimatedCursor.css';
 
 export const AnimatedCursor = () => {
-  // Only render custom cursor on devices supporting hover (i.e. desktops)
-  if (window.matchMedia('(hover: none)').matches) {
-    return null;
-  }
-
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  // Ensure hooks always run in the same order
   const [visible, setVisible] = useState(false);
   const cursorRef = useRef<HTMLDivElement>(null);
+
+  // Only render custom cursor on devices supporting hover (i.e. desktops)
+  if (typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches) {
+    return null;
+  }
 
   useEffect(() => {
     const moveHandler = (e: MouseEvent) => {
