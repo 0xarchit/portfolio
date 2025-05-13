@@ -1,20 +1,10 @@
 import '@/index.css';
 import './globals.css';
-import type { Metadata } from 'next';
-
-
-export const metadata: Metadata = {
-  title: '0xArchit | Archit Jain | The Developer',
-  description: "Hi, I'm Archit Jain, aka '0xArchit', a programmer and student in India. I love exploring and learning new Tech. Currently I am learning MERN Stack, Python and Ai Implementation, Cyber Security, Ethical Hacking, and many more. By keeping my self diverse in tech field and following my passion. I am a self-taught programmer. I enjoys reading business, stock and crypto market news in free time.",
-  icons: {
-    icon: '/0xarchit.ico',
-  },
-};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode; 
 }) {
   return (
     <html lang="en" className="overflow-x-hidden">
