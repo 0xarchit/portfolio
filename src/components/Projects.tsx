@@ -1,17 +1,35 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ScrollText, Bot, GraduationCap, Search } from 'lucide-react';
+import { ScrollText, Bot, GraduationCap, Search, BotIcon, FileSearch } from 'lucide-react';
 import { ProjectCard } from './ProjectCard';
 import { ComingSoonModal } from './ComingSoonModal';
 
 const projects = [
   {
+    title: 'AI Classroom Assistant',
+    description: 'This project integrates emotion detection, voice-to-text, AI processing, and text-to-voice capabilities into a web-based teaching assistant system. Powered by FastAPI and  self trained LLaMA 3.1 3B.',
+    icon: BotIcon,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/Classroom_AI_Assistant',
+    docs: 'https://docs.0xarchit.is-a.dev/aiclassroomassistant',
+    demo: '#'
+  },
+  {
+    title: 'DuckDuckGo Content Scraper',
+    description: 'Web scraping toolkit with Python and Cloudflare Worker—uses DuckDuckGo, Jina AI, Groq LLM, and GetPantry for dynamic search, storage, extraction, and analysis.',
+    icon: FileSearch,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/duckduckgo-webscraper',
+    docs: 'https://docs.0xarchit.is-a.dev/webscraper',
+    demo: '#'
+  },
+  {
     title: 'AI News Verification',
-    description: 'Advanced system for verifying news authenticity using AI and machine learning. Features real-time fact-checking and source verification.',
+    description: 'Advanced system for verifying news authenticity using AI and RAG. Features real-time fact-checking and source verification.',
     icon: Search,
     color: 'pink',
     git: '#',
-    docs: 'https://docs.0xarchit.is-a.dev/fakenews/',
+    docs: 'https://docs.0xarchit.is-a.dev/fakenews',
     demo: 'https://news-verify.0xarchit.is-a.dev'
   },
   {
@@ -20,7 +38,7 @@ const projects = [
     icon: GraduationCap,
     color: 'purple',
     git: 'https://github.com/0xarchit/LearnTrack',
-    docs: 'https://docs.0xarchit.is-a.dev/learntrack/',
+    docs: 'https://docs.0xarchit.is-a.dev/learntrack',
     demo: 'https://learntrack.pages.dev'
   },
   {
@@ -29,8 +47,8 @@ const projects = [
     icon: ScrollText,
     color: 'blue',
     git: 'https://github.com/0xarchit/Scroll-To-Pdf',
-    docs: 'https://docs.0xarchit.is-a.dev/scroll2pdf/',
-    demo: 'https://github.com/bitbotsofficial/Scroll-To-Pdf/releases/tag/1.0.0'
+    docs: 'https://docs.0xarchit.is-a.dev/scroll2pdf',
+    demo: 'https://github.com/0xarchit/Scroll-To-Pdf/releases/tag/1.0.0'
   },
   {
     title: 'CodeArc',
@@ -38,8 +56,8 @@ const projects = [
     icon: Bot,
     color: 'teal',
     git: 'https://github.com/0xarchit/CodeArc',
-    docs: 'https://docs.0xarchit.is-a.dev/codearc/',
-    demo: 'https://codearc.pages.dev'
+    docs: 'https://docs.0xarchit.is-a.dev/codearc',
+    demo: 'https://codearc.0xarchit.is-a.dev'
   }
 ];
 

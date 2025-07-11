@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "start-prod": "pnpm run build && pnpm run start"
+    "devstart": "pnpm run build && pnpm run start"
   },
   "dependencies": {
     "framer-motion": "^11.18.2",

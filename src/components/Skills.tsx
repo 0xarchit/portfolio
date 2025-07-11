@@ -21,12 +21,12 @@ const skills = [
   {
     name: 'UI/UX Design',
     icon: Cpu,
-    skills: ['Figma', 'Canva']
+    skills: ['Figma', 'Canva', 'Framer']
   },
   {
     name: 'Database',
     icon: Database,
-    skills: ['PostgreSQL', 'MongoDB', 'Redis', 'Supabase', 'MySQL']
+    skills: ['PostgreSQL', 'MongoDB', 'Redis', 'Supabase', 'MySQL', 'SQLite']
   },
   {
     name: 'DevOps & Cloud',
@@ -51,7 +51,7 @@ const skills = [
   {
     name: 'Tools & Others',
     icon: Cpu,
-    skills: ['SEO', 'Git', 'VS Code', 'Postman', 'BurpSuite', 'Discord', 'Notion', 'Android Studio', 'Jupyter Notebook', 'Google Colab', 'Open Source']
+    skills: ['SEO', 'Git', 'VS Code', 'Postman', 'N8N','BurpSuite', 'Discord', 'Notion', 'Android Studio', 'Jupyter Notebook', 'Google Colab', 'Open Source']
   }
 ];
 
