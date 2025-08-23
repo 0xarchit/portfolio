@@ -66,7 +66,7 @@ export const Hero = () => {
               Contact Me
             </Link>
             <motion.a
-              href="https://files.0xarchit.is-a.dev/0:/archit_resume.pdf"
+              href="https://files.0xarchit.is-a.dev/archit_resume.pdf"
               download
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#64FFDA] text-[#0A192F] hover:bg-[#64FFDA]/90 rounded-lg font-semibold transition-colors group"
               whileHover={{ scale: 1.05 }}
