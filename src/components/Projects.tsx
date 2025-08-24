@@ -21,14 +21,14 @@ const projects = [
     color: 'pink',
     git: 'https://github.com/0xarchit/duckduckgo-webscraper',
     docs: 'https://docs.0xarchit.is-a.dev/webscraper',
-    demo: '#'
+    demo: 'https://duckduckgo-webscraper.onrender.com'
   },
   {
     title: 'AI News Verification',
     description: 'Advanced system for verifying news authenticity using AI and RAG. Features real-time fact-checking and source verification.',
     icon: Search,
     color: 'pink',
-    git: '#',
+    git: 'https://github.com/0xarchit/news-verification-system',
     docs: 'https://docs.0xarchit.is-a.dev/fakenews',
     demo: 'https://news-verify.0xarchit.is-a.dev'
   },
