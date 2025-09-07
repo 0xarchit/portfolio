@@ -20,6 +20,8 @@ export default function RootLayout({
         <meta name="author" content="0xArchit" />
         <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <link rel="icon" href="/0xarchit.ico" sizes="any" />
+        <link rel="icon" type="image/png" href="/0xarchit.png" />
         <link rel="preload" href="/custom_cur.webp" as="image" type="image/webp" />
         <link rel="preconnect" href="https://files.0xarchit.is-a.dev" />
         <title>0xArchit | Archit Jain | The Developer</title>
