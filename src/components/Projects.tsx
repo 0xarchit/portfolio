@@ -1,10 +1,37 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ScrollText, Bot, GraduationCap, Search, BotIcon, FileSearch } from 'lucide-react';
+import { ScrollText, Bot, GraduationCap, Search, BotIcon, FileSearch, Newspaper, MessageSquareText, Waypoints, Gitlab } from 'lucide-react';
 import { ProjectCard } from './ProjectCard';
 import { ComingSoonModal } from './ComingSoonModal';
 
 const projects = [
+  {
+    title: 'ArcNews',
+    description: 'ArcNews is a comprehensive, production-style news dashboard designed with a modular, full-stack architecture. It demonstrates the integration of multiple modern technologies to deliver a feature-rich user experience.',
+    icon: Newspaper,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/ArcNews-DashBoard',
+    docs: 'https://docs.0xarchit.is-a.dev/arcnews',
+    demo: 'https://arcnews.0xarchit.is-a.dev'
+  },
+  {
+    title: 'ChatDoc',
+    description: 'ChatDoc is a web application enabling users to upload documents (PDF, TXT, CSV, XLSX, PPTX, DOCX), extract and chunk text, store embeddings in Milvus, and query with state-of-the-art LLMs. It provides both a REST API and a web-based interface for seamless integration.',
+    icon: MessageSquareText,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/ChatDoc',
+    docs: 'https://docs.0xarchit.is-a.dev/ragchatdoc',
+    demo: 'https://chatdoc.0xarchit.is-a.dev'
+  },
+  {
+    title: 'Github Profile Analyzer',
+    description: 'AI Powered Github Profile analyzer and reviewer tool. Gives review based on first 100 repos and only includes those forks in which user has contributions to avoid fake results',
+    icon: Gitlab,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/github-profile-analyzer',
+    docs: 'https://docs.0xarchit.is-a.dev/githubprofileanalyser',
+    demo: 'https://git.0xcloud.workers.dev'
+  },
   {
     title: 'AI Classroom Assistant',
     description: 'This project integrates emotion detection, voice-to-text, AI processing, and text-to-voice capabilities into a web-based teaching assistant system. Powered by FastAPI and  self trained LLaMA 3.1 3B.',
@@ -22,6 +49,15 @@ const projects = [
     git: 'https://github.com/0xarchit/duckduckgo-webscraper',
     docs: 'https://docs.0xarchit.is-a.dev/webscraper',
     demo: 'https://duckduckgo-webscraper.onrender.com'
+  },
+  {
+    title: 'ArcArcGo',
+    description: 'ArcArcGo is a Cloudflare Worker that acts as a transparent proxy for DuckDuckGo, implementing custom branding and URL rewriting through regex patterns and JavaScript injection.',
+    icon: Waypoints,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/ArcArcGo',
+    docs: 'https://docs.0xarchit.is-a.dev/arcarcgo',
+    demo: 'https://arcarcgo.0xarc.workers.dev'
   },
   {
     title: 'AI News Verification',
