@@ -6,15 +6,6 @@ import { ComingSoonModal } from './ComingSoonModal';
 
 const projects = [
   {
-    title: 'Chatty - Anywhere Chatbot',
-    description: 'Chatty is a lightweight, drop-in JavaScript widget that adds a floating, context-aware chatbot to any website. The widget is delivered as a single script via Jsdelivr cdn. Chatty supports customizable branding, theme mode, system prompt, and optional page context capture.',
-    icon: MessageCircleCode,
-    color: 'pink',
-    git: 'https://github.com/0xarchit/AnyWhere-ChatBot-Chatty',
-    docs: 'https://docs.0xarchit.is-a.dev/chatty',
-    demo: 'https://chatty.0xarchit.is-a.dev'
-  },
-  {
     title: 'AlgorithmAce',
     description: 'AlgorithmAce is an AI-powered Chrome extension that enhances LeetCode with problem explanations, friend comparisons, visual analytics, daily challenges, reminders, and motivational insights for smarter, consistent coding practice.',
     icon: Code2,
@@ -22,6 +13,15 @@ const projects = [
     git: 'https://github.com/0xarchit/AlgorithmAce',
     docs: 'https://docs.0xarchit.is-a.dev/algorithmace',
     demo: 'https://algorithmace.0xarchit.is-a.dev'
+  },
+  {
+    title: 'Chatty - Anywhere Chatbot',
+    description: 'Chatty is a lightweight, drop-in JavaScript widget that adds a floating, context-aware chatbot to any website. The widget is delivered as a single script via Jsdelivr cdn. Chatty supports customizable branding, theme mode, system prompt, and optional page context capture.',
+    icon: MessageCircleCode,
+    color: 'pink',
+    git: 'https://github.com/0xarchit/AnyWhere-ChatBot-Chatty',
+    docs: 'https://docs.0xarchit.is-a.dev/chatty',
+    demo: 'https://chatty.0xarchit.is-a.dev'
   },
   {
     title: 'ArcNews',
