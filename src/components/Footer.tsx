@@ -39,16 +39,14 @@ export function Footer() {
     <footer className="bg-[#0A192F] border-t border-[#233554] mt-20">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* About Section */}
-          <div>
+                    <div>
             <h3 className="text-[#64FFDA] font-bold text-xl mb-4">0xArchit</h3>
             <p className="text-[#8892B0] text-sm leading-relaxed">
               Passionate programmer and student, building innovative solutions.
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div>
+                    <div>
             <h3 className="text-[#CCD6F6] font-bold text-lg mb-4">
               Quick Links
             </h3>
@@ -66,8 +64,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Social Links */}
-          <div>
+                    <div>
             <h3 className="text-[#CCD6F6] font-bold text-lg mb-4">Connect</h3>
             <div className="flex gap-4 mb-4">
               {socialLinks.map((social) => (
@@ -106,8 +103,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-[#233554] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="border-t border-[#233554] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[#8892B0] text-sm">
             © {currentYear} 0xArchit (Archit Jain). All rights reserved.
           </p>

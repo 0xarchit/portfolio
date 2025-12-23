@@ -1,9 +1,14 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import { Blob } from './Blob';
 import { Download } from 'lucide-react';
 import Link from 'next/link';
 
 export const Hero = () => {
+    
+
+
   return (
     <section className="min-h-screen flex items-center relative overflow-hidden pt-40 md:pt-20">
       <Blob />
@@ -60,15 +65,34 @@ export const Hero = () => {
               View Projects
             </Link>
             <Link
-              href="#contact"
+              href="/contact-us"
               className="w-full sm:w-auto px-6 py-3 bg-[#64FFDA]/10 text-[#64FFDA] hover:bg-[#64FFDA]/20 rounded-lg font-semibold transition-colors text-center"
             >
               Contact Me
             </Link>
             <motion.a
               href="https://files.0xarchit.is-a.dev/archit_resume.pdf"
-              download
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#64FFDA] text-[#0A192F] hover:bg-[#64FFDA]/90 rounded-lg font-semibold transition-colors group"
+              target="_blank"
+              onClick={async () => {
+                try {
+                  const stored = sessionStorage.getItem('user_session_stats');
+                  const sessionStats = stored ? JSON.parse(stored) : {};
+                  
+                  await fetch('/api/track-download', { 
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                          sessionStats: {
+                              ...sessionStats,
+                              totalTime: Date.now() - (sessionStats.startTime || Date.now())
+                          }
+                      })
+                  });
+                } catch (e) {
+                  console.error('Tracking failed', e);
+                }
+              }}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#64FFDA] text-[#0A192F] hover:bg-[#64FFDA]/90 rounded-lg font-semibold transition-colors group cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

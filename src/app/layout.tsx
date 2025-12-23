@@ -1,5 +1,7 @@
 import '@/index.css';
 import './globals.css';
+import { ReCaptchaProvider } from '@/components/ReCaptchaProvider';
+import { SessionTracker } from '@/components/SessionTracker';
 
 export default function RootLayout({
   children,
@@ -26,7 +28,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://files.0xarchit.is-a.dev" />
         <title>0xArchit | Archit Jain | The Developer</title>
       </head>
-      <body className="bg-gradient-to-br from-[#0A192F] via-[#112240] to-[#0A192F] text-[#E6F1FF] overflow-x-hidden min-h-screen min-w-full">{children}</body>
+      <body className="bg-gradient-to-br from-[#0A192F] via-[#112240] to-[#0A192F] text-[#E6F1FF] overflow-x-hidden min-h-screen min-w-full">
+        <ReCaptchaProvider captchaKey={process.env.CAPTCHA_KEY}>
+            <SessionTracker />
+            {children}
+        </ReCaptchaProvider>
+      </body>
     </html>
   );
 }

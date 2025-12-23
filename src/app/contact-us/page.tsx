@@ -1,5 +1,6 @@
 "use client";
 import { PageLayout } from "@/components/PageLayout";
+import { Contact } from "@/components/Contact";
 import { Mail, Github, Linkedin, Twitter, ExternalLink } from "lucide-react";
 
 export default function ContactUs() {
@@ -97,21 +98,8 @@ export default function ContactUs() {
           ))}
         </section>
 
-        <section className="mt-12 p-6 bg-[#0A192F] rounded-lg border border-[#233554]">
-          <h2 className="text-2xl font-bold text-[#CCD6F6] mb-4">
-            Preferred Contact Method
-          </h2>
-          <p className="text-[#8892B0] leading-relaxed">
-            For business inquiries and project discussions, please email me
-            directly at{" "}
-            <a
-              href="mailto:mail@0xarchit.is-a.dev"
-              className="text-[#64FFDA] hover:underline font-mono"
-            >
-              mail@0xarchit.is-a.dev
-            </a>
-            . I typically respond within 24-48 hours.
-          </p>
+        <section className="mt-12">
+          <Contact />
         </section>
       </div>
     </PageLayout>

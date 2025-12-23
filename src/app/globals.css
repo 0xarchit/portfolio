@@ -1,4 +1,4 @@
-/* Extra fixes for edge issues */
+
 html,
 body {
   margin: 0;
@@ -8,7 +8,7 @@ body {
   background-color: #0a192f;
 }
 
-/* Fix for mobile devices that might show white edges */
+
 body::after {
   content: "";
   position: fixed;

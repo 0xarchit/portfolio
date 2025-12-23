@@ -16,7 +16,7 @@
     scrollbar-width: none;
   }
 
-  /* Fix white line issue on edges */
+  
   html,
   body {
     @apply overflow-x-hidden m-0 p-0;
@@ -45,7 +45,7 @@
   @apply bg-white/30;
 }
 
-/* Custom shadow class for containers */
+
 .custom-shadow {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }

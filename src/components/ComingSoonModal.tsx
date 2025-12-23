@@ -10,8 +10,7 @@ interface ComingSoonModalProps {
 export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black opacity-50" onClick={onClose} />
+            <div className="absolute inset-0 bg-black opacity-50" onClick={onClose} />
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

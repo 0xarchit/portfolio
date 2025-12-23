@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export const Blob = () => {
   return (
-    // Hide blob on small devices
+    
     <div className="block absolute top-0 right-0 w-[800px] h-[600px] -z-0 opacity-50">
       <motion.div
         animate={{
