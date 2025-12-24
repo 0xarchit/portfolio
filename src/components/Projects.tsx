@@ -41,7 +41,7 @@ const projects = [
     icon: Scale,
 
     git: "https://github.com/0xarchit/BillsSentiments",
-    docs: "https://docs.0xarchit.is-a.dev/billsentiments",
+    docs: "https://docs.0xarchit.is-a.dev/billssentiments",
     demo: "#",
   },
   {
