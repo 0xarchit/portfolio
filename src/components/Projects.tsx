@@ -37,7 +37,7 @@ const projects = [
   {
     title: "Bills Sentiment",
     description:
-      "Multi-region search testing across Google, Bing, DuckDuckGo, and Yahoo using HTTP/SOCKS4/SOCKS5 proxies with optional Google Programmable Search API, Playwright screenshots, resource-aware parallel browsers, and auto-scaling concurrency.",
+      "BillsSentiments is an advanced AI-driven analytical dashboard built for the 3rd Semester Major Project. By leveraging Natural Language Processing (NLP), Large Language Models (LLMs), and Retrieval-Augmented Generation (RAG), this platform automates sentiment analysis, contextual summarization, semantic search and visual analysis",
     icon: Scale,
 
     git: "https://github.com/0xarchit/BillsSentiments",

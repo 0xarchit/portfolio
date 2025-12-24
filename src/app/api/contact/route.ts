@@ -13,11 +13,22 @@ const MAX_REQUESTS = 5;
 export async function POST(req: NextRequest) {
   try {
     
-    const origin = req.headers.get('origin');
-    const referer = req.headers.get('referer');
-    const allowedOrigin = 'https://0xarchit.is-a.dev';
-    const isLocalhost = origin?.includes('localhost') || referer?.includes('localhost');
-    const isAllowed = origin === allowedOrigin || referer?.startsWith(allowedOrigin) || isLocalhost;
+    const originHeader = req.headers.get('origin');
+    const refererHeader = req.headers.get('referer');
+    
+    const allowedHosts = ['0xarchit.is-a.dev', 'localhost', '127.0.0.1'];
+
+    const verifyHost = (url: string | null) => {
+        if (!url) return false;
+        try {
+            const parsed = new URL(url);
+            return allowedHosts.includes(parsed.hostname);
+        } catch {
+            return false;
+        }
+    };
+
+    const isAllowed = verifyHost(originHeader) || verifyHost(refererHeader);
 
     if (!isAllowed) {
       return NextResponse.json({ error: 'Unauthorized origin' }, { status: 403 });
