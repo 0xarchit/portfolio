@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
-import { Github, ExternalLink, FileText, DivideIcon as LucideIcon } from 'lucide-react';
+import { Github, ExternalLink, FileText } from 'lucide-react';
 import { GlassCard } from './GlassCard';
+import { DynamicIcon } from './DynamicIcon';
 
 interface ProjectCardProps {
   title: string;
   description: string;
-  icon: typeof LucideIcon;
+  iconName: string;
   git: string;
   docs: string;
   demo: string;
@@ -16,7 +17,7 @@ interface ProjectCardProps {
 export const ProjectCard = ({
   title,
   description,
-  icon: Icon,
+  iconName,
   git,
   docs,
   demo,
@@ -27,7 +28,7 @@ export const ProjectCard = ({
     <GlassCard className="backdrop-blur-lg bg-[#233554]/10">
       <div className="flex items-center gap-4 mb-4">
         <div className="p-3 rounded-lg bg-[#64FFDA]/10 text-[#64FFDA]">
-          <Icon className="w-8 h-8" />
+          <DynamicIcon name={iconName} className="w-8 h-8" />
         </div>
         <h3 className="text-2xl font-semibold text-[#CCD6F6]">{title}</h3>
       </div>
