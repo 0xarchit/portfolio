@@ -12,8 +12,8 @@ async function getData() {
   
   try {
     const [skillsRes, projectsRes] = await Promise.all([
-      fetch(`${apiUrl}/v1/skills`, { next: { revalidate: 3600 } }),
-      fetch(`${apiUrl}/v1/projects`, { next: { revalidate: 3600 } })
+      fetch(`${apiUrl}/v1/skills`, { cache: 'no-store' }),
+      fetch(`${apiUrl}/v1/projects`, { cache: 'no-store' })
     ]);
 
     if (!skillsRes.ok || !projectsRes.ok) {
