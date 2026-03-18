@@ -1,13 +1,46 @@
-"use client";
 import { PageLayout } from "@/components/PageLayout";
+import { AllPortfolioData } from "@/types/api";
 
-export default function TermsOfService() {
+const cleanValue = (value?: string) =>
+  (value || "").replace(/`/g, "").trim();
+
+async function getAllData(): Promise<AllPortfolioData | null> {
+  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  try {
+    const res = await fetch(`${apiUrl}/v1/all`, {
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) {
+      return null;
+    }
+    const data: AllPortfolioData = await res.json();
+    return {
+      ...data,
+      about: {
+        ...data.about,
+        links: Object.fromEntries(
+          Object.entries(data.about?.links || {}).map(([key, value]) => [
+            key,
+            cleanValue(value),
+          ])
+        ),
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+export default async function TermsOfService() {
+  const data = await getAllData();
+  const about = data?.about;
   const lastUpdated = "November 2, 2025";
 
   return (
     <PageLayout
       title="Terms of Service"
       description="Terms and conditions for using 0xArchit's projects and services"
+      about={about}
     >
       <div className="space-y-8 text-[#CCD6F6]">
         <p className="text-[#8892B0] italic">Last Updated: {lastUpdated}</p>

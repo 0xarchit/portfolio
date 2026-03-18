@@ -1,65 +1,79 @@
-"use client";
 import { PageLayout } from "@/components/PageLayout";
 import { Contact } from "@/components/Contact";
 import { Mail, Github, Linkedin, Twitter, ExternalLink } from "lucide-react";
+import { AllPortfolioData } from "@/types/api";
 
-export default function ContactUs() {
-  const contactLinks = [
-    {
-      icon: <Mail className="w-6 h-6" />,
-      label: "Email",
-      value: "mail@0xarchit.is-a.dev",
-      href: "mailto:mail@0xarchit.is-a.dev",
-      description: "Direct email for inquiries",
-    },
-    {
-      icon: <Github className="w-6 h-6" />,
-      label: "GitHub",
-      value: "@0xarchit",
-      href: "https://github.com/0xarchit",
-      description: "Check out my code and projects",
-    },
-    {
-      icon: <Linkedin className="w-6 h-6" />,
-      label: "LinkedIn (Personal)",
-      value: "in/0xarchit",
-      href: "https://linkedin.com/in/0xarchit",
-      description: "Connect with me professionally",
-    },
-    {
-      icon: <Linkedin className="w-6 h-6" />,
-      label: "LinkedIn (Company)",
-      value: "0xarchit-projects",
-      href: "https://www.linkedin.com/company/0xarchit-projects",
-      description: "Follow my projects and updates",
-    },
-    {
-      icon: <Twitter className="w-6 h-6" />,
-      label: "X (Twitter)",
-      value: "@0xarchit",
-      href: "https://x.com/0xarchit",
-      description: "Follow for tech insights and updates",
-    },
-    {
-      icon: <ExternalLink className="w-6 h-6" />,
-      label: "Website",
-      value: "0xarchit.is-a.dev",
-      href: "https://0xarchit.is-a.dev",
-      description: "Visit my portfolio website",
-    },
-    {
-      icon: <ExternalLink className="w-6 h-6" />,
-      label: "Carrd",
-      value: "0xarchit.carrd.co",
-      href: "https://0xarchit.carrd.co",
-      description: "Alternative portfolio page",
-    },
-  ];
+const cleanValue = (value?: string) =>
+  (value || "").replace(/`/g, "").trim();
+
+async function getAllData(): Promise<AllPortfolioData | null> {
+  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  try {
+    const res = await fetch(`${apiUrl}/v1/all`, {
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) {
+      return null;
+    }
+    const data: AllPortfolioData = await res.json();
+    return {
+      ...data,
+      about: {
+        ...data.about,
+        links: Object.fromEntries(
+          Object.entries(data.about?.links || {}).map(([key, value]) => [
+            key,
+            cleanValue(value),
+          ])
+        ),
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+export default async function ContactUs() {
+  const data = await getAllData();
+  const about = data?.about;
+
+  const iconByKey: Record<string, JSX.Element> = {
+    email: <Mail className="w-6 h-6" />,
+    github: <Github className="w-6 h-6" />,
+    linkedin: <Linkedin className="w-6 h-6" />,
+    twitter: <Twitter className="w-6 h-6" />,
+  };
+
+  const labelByKey: Record<string, string> = {
+    github: "GitHub",
+    linkedin: "LinkedIn",
+    twitter: "X (Twitter)",
+    email: "Email",
+    docs: "Documentation",
+    leetcode: "LeetCode",
+    codolio: "Codolio",
+    peerlist: "Peerlist",
+    portfolio_secondary: "Secondary Portfolio",
+    card: "Card",
+    resume: "Resume",
+  };
+
+  const contactLinks = Object.entries(about?.links || {})
+    .filter(([, href]) => Boolean(href))
+    .map(([key, href]) => ({
+      key,
+      icon: iconByKey[key] || <ExternalLink className="w-6 h-6" />,
+      label: labelByKey[key] || key.replace(/_/g, " "),
+      value: href.replace(/^mailto:/, ""),
+      href,
+      description: `${labelByKey[key] || key} link from API`,
+    }));
 
   return (
     <PageLayout
       title="Contact Us"
       description="Get in touch with 0xArchit for collaborations, inquiries, or just to say hello!"
+      about={about}
     >
       <div className="space-y-8 mt-8">
         <section>
@@ -71,9 +85,9 @@ export default function ContactUs() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-2">
-          {contactLinks.map((link, index) => (
+          {contactLinks.map((link) => (
             <a
-              key={index}
+              key={link.key}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"

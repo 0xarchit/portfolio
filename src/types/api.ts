@@ -19,3 +19,34 @@ export interface Project {
   icon: string;
   links: ProjectLink;
 }
+
+export interface AboutLinks {
+  github?: string;
+  linkedin?: string;
+  twitter?: string;
+  email?: string;
+  docs?: string;
+  leetcode?: string;
+  codolio?: string;
+  peerlist?: string;
+  portfolio_secondary?: string;
+  card?: string;
+  resume?: string;
+}
+
+export interface AboutProfile {
+  firstname: string;
+  lastname: string;
+  username: string;
+  title: string;
+  bio: string;
+  background: string;
+  links: AboutLinks;
+  interests: string[];
+}
+
+export interface AllPortfolioData {
+  about: AboutProfile;
+  projects: Project[];
+  skills: SkillCategory[];
+}

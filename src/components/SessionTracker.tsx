@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { getElementName } from '../utils/tracking';
+import { getElementName, STORAGE_KEY } from '../utils/tracking';
 import { getFingerprint } from '../utils/fingerprint';
 
 export interface NavigatorDetails {
@@ -37,10 +37,35 @@ export interface SessionStats {
   startTime: number;
   paths: string[];
   screenResolution: string;
+  localTimezone?: string;
+  referrer?: string;
+  buttonClicks?: Array<{
+    target: string;
+    x: number;
+    y: number;
+    timestampMs: number;
+    path: string;
+  }>;
+  fieldEvents?: Array<{
+    field: string;
+    type: 'focus' | 'blur';
+    timestampMs: number;
+    path: string;
+  }>;
+  downloadEvents?: Array<{
+    resource: string;
+    status: 'start' | 'complete' | 'error';
+    timestampMs: number;
+    errorCode?: string;
+  }>;
+  errorCodes?: Array<{
+    code: string;
+    context: string;
+    timestampMs: number;
+  }>;
+  lastEventTimestamp?: number;
   navigatorDetails?: NavigatorDetails;
 }
-
-const STORAGE_KEY = 'user_session_stats';
 
 export const SessionTracker = () => {
   const pathname = usePathname();
@@ -59,23 +84,41 @@ export const SessionTracker = () => {
       }
 
       
-      const nav: any = typeof navigator !== 'undefined' ? navigator : {};
-      const conn = nav.connection || nav.mozConnection || nav.webkitConnection;
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      const conn =
+        nav &&
+        'connection' in nav &&
+        nav.connection &&
+        typeof nav.connection === 'object'
+          ? nav.connection
+          : null;
       
       const navigatorDetails: NavigatorDetails = {
-          userAgent: nav.userAgent || 'unknown',
-          platform: nav.platform || 'unknown',
-          language: nav.language || 'unknown',
-          languages: nav.languages || [],
-          hardwareConcurrency: nav.hardwareConcurrency || 0,
-          deviceMemory: (nav as any).deviceMemory,
-          maxTouchPoints: nav.maxTouchPoints || 0,
-          vendor: nav.vendor || 'unknown',
+          userAgent: nav?.userAgent || 'unknown',
+          platform: nav?.platform || 'unknown',
+          language: nav?.language || 'unknown',
+          languages: [...(nav?.languages || [])],
+          hardwareConcurrency: nav?.hardwareConcurrency || 0,
+          deviceMemory:
+            nav && 'deviceMemory' in nav
+              ? (nav as Navigator & { deviceMemory?: number }).deviceMemory
+              : undefined,
+          maxTouchPoints: nav?.maxTouchPoints || 0,
+          vendor: nav?.vendor || 'unknown',
           connection: conn ? {
-            effectiveType: conn.effectiveType,
-            downlink: conn.downlink,
-            rtt: conn.rtt,
-            saveData: conn.saveData
+            effectiveType:
+              'effectiveType' in conn && typeof conn.effectiveType === 'string'
+                ? conn.effectiveType
+                : 'unknown',
+            downlink:
+              'downlink' in conn && typeof conn.downlink === 'number'
+                ? conn.downlink
+                : 0,
+            rtt: 'rtt' in conn && typeof conn.rtt === 'number' ? conn.rtt : 0,
+            saveData:
+              'saveData' in conn && typeof conn.saveData === 'boolean'
+                ? conn.saveData
+                : false
           } : undefined
       };
 
@@ -103,6 +146,14 @@ export const SessionTracker = () => {
           startTime: Date.now(),
           paths: [pathname],
           screenResolution: typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : 'unknown',
+          localTimezone:
+            Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown',
+          referrer: document.referrer || 'N/A',
+          buttonClicks: [],
+          fieldEvents: [],
+          downloadEvents: [],
+          errorCodes: [],
+          lastEventTimestamp: Date.now(),
           navigatorDetails
         };
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
@@ -121,6 +172,14 @@ export const SessionTracker = () => {
 
         
         stats.navigatorDetails = navigatorDetails;
+        stats.localTimezone =
+          Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown';
+        stats.referrer = document.referrer || stats.referrer || 'N/A';
+        stats.buttonClicks = stats.buttonClicks || [];
+        stats.fieldEvents = stats.fieldEvents || [];
+        stats.downloadEvents = stats.downloadEvents || [];
+        stats.errorCodes = stats.errorCodes || [];
+        stats.lastEventTimestamp = Date.now();
 
         
         if (stats.paths[stats.paths.length - 1] !== pathname) {
@@ -150,9 +209,26 @@ export const SessionTracker = () => {
 
     const handleClick = (e: MouseEvent) => {
       const name = getElementName(e.target);
+      const clickable =
+        e.target instanceof Element
+          ? e.target.closest('button, a, [role="button"], input[type="submit"]')
+          : null;
       updateStats(prev => ({
         ...prev,
-        clicks: [...prev.clicks, `[${pathname}] ${name}`].slice(-50) 
+        clicks: [...prev.clicks, `[${pathname}] ${name}`].slice(-50),
+        buttonClicks: clickable
+          ? [
+              ...(prev.buttonClicks || []),
+              {
+                target: name,
+                x: Math.round(e.clientX),
+                y: Math.round(e.clientY),
+                timestampMs: Date.now(),
+                path: pathname,
+              },
+            ].slice(-80)
+          : prev.buttonClicks || [],
+        lastEventTimestamp: Date.now(),
       }));
     };
 
@@ -160,7 +236,34 @@ export const SessionTracker = () => {
       const name = getElementName(e.target);
       updateStats(prev => ({
         ...prev,
-        focused: [...prev.focused, `[${pathname}] ${name}`].slice(-50)
+        focused: [...prev.focused, `[${pathname}] ${name}`].slice(-50),
+        fieldEvents: [
+          ...(prev.fieldEvents || []),
+          {
+            field: name,
+            type: 'focus' as const,
+            timestampMs: Date.now(),
+            path: pathname,
+          },
+        ].slice(-120),
+        lastEventTimestamp: Date.now(),
+      }));
+    };
+
+    const handleBlur = (e: FocusEvent) => {
+      const name = getElementName(e.target);
+      updateStats((prev) => ({
+        ...prev,
+        fieldEvents: [
+          ...(prev.fieldEvents || []),
+          {
+            field: name,
+            type: 'blur' as const,
+            timestampMs: Date.now(),
+            path: pathname,
+          },
+        ].slice(-120),
+        lastEventTimestamp: Date.now(),
       }));
     };
 
@@ -170,7 +273,8 @@ export const SessionTracker = () => {
         const text = selection.length > 20 ? selection.slice(0, 20) + '...' : selection;
         updateStats(prev => ({
            ...prev,
-           copies: [...prev.copies, `[${pathname}] "${text}"`].slice(-20)
+           copies: [...prev.copies, `[${pathname}] "${text}"`].slice(-20),
+           lastEventTimestamp: Date.now(),
         }));
       }
     };
@@ -179,18 +283,21 @@ export const SessionTracker = () => {
         const scrollPercent = Math.round((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100);
         updateStats(prev => ({
             ...prev,
-            maxScroll: Math.max(prev.maxScroll, scrollPercent)
+            maxScroll: Math.max(prev.maxScroll, scrollPercent),
+            lastEventTimestamp: Date.now(),
         }));
     };
 
     window.addEventListener('click', handleClick);
-    window.addEventListener('focus', handleFocus as any, true);
+    window.addEventListener('focus', handleFocus, true);
+    window.addEventListener('blur', handleBlur, true);
     window.addEventListener('copy', handleCopy);
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('click', handleClick);
-      window.removeEventListener('focus', handleFocus as any, true);
+      window.removeEventListener('focus', handleFocus, true);
+      window.removeEventListener('blur', handleBlur, true);
       window.removeEventListener('copy', handleCopy);
       window.removeEventListener('scroll', handleScroll);
     };
