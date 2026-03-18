@@ -5,18 +5,20 @@ import { Footer } from "./Footer";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { AboutProfile } from "@/types/api";
 
 interface PageLayoutProps {
   children: React.ReactNode;
   title: string;
   description?: string;
+  about?: AboutProfile;
 }
 
-export function PageLayout({ children, title, description }: PageLayoutProps) {
+export function PageLayout({ children, title, description, about }: PageLayoutProps) {
   return (
     <>
       <AnimatedCursor />
-      <Header />
+      <Header about={about} />
       <main className="min-h-screen pt-24 pb-16 px-4">
         <div className="max-w-4xl mx-auto">
           <Link
@@ -45,7 +47,7 @@ export function PageLayout({ children, title, description }: PageLayoutProps) {
           </motion.div>
         </div>
       </main>
-      <Footer />
+      <Footer about={about} />
     </>
   );
 }

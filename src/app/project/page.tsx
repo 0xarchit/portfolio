@@ -9,7 +9,7 @@ const AnimatedConstructionSVG = () => (
     viewBox="0 0 400 300"
     className="w-full max-w-md mx-auto"
   >
-    {/* Background gradient */}
+    
     <defs>
       <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#64FFDA" stopOpacity="0.1" />
@@ -28,10 +28,10 @@ const AnimatedConstructionSVG = () => (
       </filter>
     </defs>
 
-    {/* Background */}
+    
     <rect width="400" height="300" fill="url(#bgGradient)" rx="10" />
 
-    {/* Animated building blocks */}
+    
     <motion.g
       animate={{
         rotate: [0, 5, -5, 0],
@@ -42,7 +42,7 @@ const AnimatedConstructionSVG = () => (
         ease: "easeInOut",
       }}
     >
-      {/* Base platform */}
+      
       <rect
         x="150"
         y="220"
@@ -53,7 +53,7 @@ const AnimatedConstructionSVG = () => (
         rx="2"
       />
 
-      {/* Building blocks */}
+      
       <motion.rect
         x="160"
         y="180"
@@ -105,7 +105,7 @@ const AnimatedConstructionSVG = () => (
       />
     </motion.g>
 
-    {/* Floating geometric shapes */}
+    
     <motion.circle
       cx="80"
       cy="80"
@@ -137,7 +137,7 @@ const AnimatedConstructionSVG = () => (
       }}
     />
 
-    {/* Progress bar */}
+    
     <rect x="50" y="250" width="300" height="8" fill="#112240" rx="4" />
     <motion.rect
       x="50"
@@ -154,7 +154,7 @@ const AnimatedConstructionSVG = () => (
       }}
     />
 
-    {/* Pulsing dots */}
+    
     <motion.circle
       cx="350"
       cy="50"

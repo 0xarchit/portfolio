@@ -1,32 +1,60 @@
 "use client";
 import Link from "next/link";
 import { Github, Linkedin, Twitter, Mail, ExternalLink } from "lucide-react";
+import { AboutProfile } from "@/types/api";
 
-export function Footer() {
+interface FooterProps {
+  about?: AboutProfile;
+}
+
+export function Footer({ about }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const links = about?.links || {};
+  const brand = about?.username || "Profile";
+  const fullName =
+    about?.firstname && about?.lastname
+      ? `${about.firstname} ${about.lastname}`
+      : "Developer";
+  const brandDescription =
+    about?.bio || "Building innovative solutions.";
 
   const socialLinks = [
     {
       icon: <Github className="w-5 h-5" />,
-      href: "https://github.com/0xarchit",
+      href: links.github,
       label: "GitHub",
     },
     {
       icon: <Linkedin className="w-5 h-5" />,
-      href: "https://linkedin.com/in/0xarchit",
+      href: links.linkedin,
       label: "LinkedIn",
     },
     {
       icon: <Twitter className="w-5 h-5" />,
-      href: "https://x.com/0xarchit",
+      href: links.twitter,
       label: "X (Twitter)",
     },
     {
       icon: <Mail className="w-5 h-5" />,
-      href: "mailto:mail@0xarchit.is-a.dev",
+      href: links.email,
       label: "Email",
     },
-  ];
+  ].filter((item) => Boolean(item.href));
+
+  const linkLabels: Record<string, string> = {
+    docs: "Documentation",
+    leetcode: "LeetCode",
+    codolio: "Codolio",
+    peerlist: "Peerlist",
+    portfolio_secondary: "Secondary Portfolio",
+    card: "Card Link",
+    resume: "Resume",
+  };
+
+  const extraLinks = Object.entries(links).filter(
+    ([key, value]) =>
+      !["github", "linkedin", "twitter", "email"].includes(key) && Boolean(value)
+  );
 
   const quickLinks = [
     { name: "About", href: "/about" },
@@ -40,9 +68,9 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                     <div>
-            <h3 className="text-[#64FFDA] font-bold text-xl mb-4">0xArchit</h3>
+            <h3 className="text-[#64FFDA] font-bold text-xl mb-4">{brand}</h3>
             <p className="text-[#8892B0] text-sm leading-relaxed">
-              Passionate programmer and student, building innovative solutions.
+              {brandDescription}
             </p>
           </div>
 
@@ -81,31 +109,25 @@ export function Footer() {
               ))}
             </div>
             <div className="space-y-2">
-              <a
-                href="https://0xarchit.carrd.co"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#8892B0] hover:text-[#64FFDA] transition-colors text-sm flex items-center gap-2"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Alternative Portfolio
-              </a>
-              <a
-                href="https://www.linkedin.com/company/0xarchit-projects"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#8892B0] hover:text-[#64FFDA] transition-colors text-sm flex items-center gap-2"
-              >
-                <Linkedin className="w-4 h-4" />
-                Company Page
-              </a>
+              {extraLinks.map(([key, href]) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#8892B0] hover:text-[#64FFDA] transition-colors text-sm flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  {linkLabels[key] || key.replace(/_/g, " ")}
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
                 <div className="border-t border-[#233554] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[#8892B0] text-sm">
-            © {currentYear} 0xArchit (Archit Jain). All rights reserved.
+            © {currentYear} {brand} ({fullName}). All rights reserved.
           </p>
           <p className="text-[#8892B0] text-sm">
             Made with <span className="text-[#64FFDA]">❤</span> using Next.js &

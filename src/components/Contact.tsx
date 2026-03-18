@@ -3,6 +3,12 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, Twitter, Send, Loader2 } from 'lucide-react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import {
+  appendSessionErrorCode,
+  appendSessionEvent,
+  getClientContext,
+  readSessionStats,
+} from '../utils/tracking';
 
 export const Contact = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -15,12 +21,24 @@ export const Contact = () => {
     startTime: Date.now()
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [submitPoint, setSubmitPoint] = useState<{ x: number; y: number } | null>(null);
   
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
+    const startTimestamp = Date.now();
+    appendSessionEvent(
+      'formSubmitEvents',
+      {
+        event: 'start',
+        timestampMs: startTimestamp,
+        form: 'contact',
+        submitPoint,
+      },
+      50
+    );
 
     let captchaToken = '';
     if (executeRecaptcha) {
@@ -28,24 +46,53 @@ export const Contact = () => {
         captchaToken = await executeRecaptcha('contact_form');
       } catch (e) {
         console.error('Captcha generation failed', e);
+        appendSessionErrorCode('CAPTCHA_TOKEN_GENERATION_FAILED', 'contact_form');
       }
     }
 
     try {
+      const stats = readSessionStats();
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
            ...formData,
            captchaToken,
+           requestTimestampMs: Date.now(),
+           submitPoint,
+           clientContext: getClientContext(),
            sessionStats: {
-               ...JSON.parse(sessionStorage.getItem('user_session_stats') || '{}'),
+               ...stats,
                totalTime: Date.now() - formData.startTime
            }
         })
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
+      if (!response.ok) {
+        appendSessionErrorCode(`CONTACT_API_${response.status}`, 'contact_submit');
+        appendSessionEvent(
+          'formSubmitEvents',
+          {
+            event: 'error',
+            timestampMs: Date.now(),
+            form: 'contact',
+            status: response.status,
+          },
+          50
+        );
+        throw new Error(`Failed to send message: ${response.status}`);
+      }
+
+      appendSessionEvent(
+        'formSubmitEvents',
+        {
+          event: 'complete',
+          timestampMs: Date.now(),
+          form: 'contact',
+          durationMs: Date.now() - startTimestamp,
+        },
+        50
+      );
 
       setStatus('success');
       setFormData({ 
@@ -58,6 +105,7 @@ export const Contact = () => {
       });
       setTimeout(() => setStatus('idle'), 3000);
     } catch {
+      appendSessionErrorCode('CONTACT_SUBMIT_FAILED', 'contact_submit');
       setStatus('error');
       setTimeout(() => setStatus('idle'), 3000);
     }
@@ -172,6 +220,12 @@ export const Contact = () => {
               <button
                 type="submit"
                 disabled={status === 'loading' || status === 'success'}
+                onClick={(event) =>
+                  setSubmitPoint({
+                    x: Math.round(event.clientX),
+                    y: Math.round(event.clientY),
+                  })
+                }
                 className={`w-full py-4 px-6 rounded-md font-mono text-sm font-medium flex items-center justify-center gap-2 transition-all duration-300 border ${
                   status === 'success' 
                     ? 'bg-[#64FFDA]/10 text-[#64FFDA] border-[#64FFDA]' 

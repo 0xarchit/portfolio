@@ -1,7 +1,20 @@
-import '@/index.css';
+import '../index.css';
 import './globals.css';
 import { ReCaptchaProvider } from '@/components/ReCaptchaProvider';
 import { SessionTracker } from '@/components/SessionTracker';
+import { Inter, Manrope } from 'next/font/google';
+
+const bodyFont = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
+});
+
+const headingFont = Manrope({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-heading',
+});
 
 export default function RootLayout({
   children,
@@ -9,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode; 
 }) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="en" className={`overflow-x-hidden ${bodyFont.variable} ${headingFont.variable}`}>
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

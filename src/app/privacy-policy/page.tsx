@@ -1,13 +1,46 @@
-"use client";
 import { PageLayout } from "@/components/PageLayout";
+import { AllPortfolioData } from "@/types/api";
 
-export default function PrivacyPolicy() {
-  const lastUpdated = "November 2, 2025";
+const cleanValue = (value?: string) =>
+  (value || "").replace(/`/g, "").trim();
+
+async function getAllData(): Promise<AllPortfolioData | null> {
+  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  try {
+    const res = await fetch(`${apiUrl}/v1/all`, {
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) {
+      return null;
+    }
+    const data: AllPortfolioData = await res.json();
+    return {
+      ...data,
+      about: {
+        ...data.about,
+        links: Object.fromEntries(
+          Object.entries(data.about?.links || {}).map(([key, value]) => [
+            key,
+            cleanValue(value),
+          ])
+        ),
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+export default async function PrivacyPolicy() {
+  const data = await getAllData();
+  const about = data?.about;
+  const lastUpdated = "March 19, 2026";
 
   return (
     <PageLayout
       title="Privacy Policy"
       description="How we handle your data and protect your privacy"
+      about={about}
     >
       <div className="space-y-8 text-[#CCD6F6]">
         <p className="text-[#8892B0] italic">Last Updated: {lastUpdated}</p>
@@ -62,11 +95,16 @@ export default function PrivacyPolicy() {
           <h2 className="text-2xl font-bold text-[#64FFDA] mb-4">
             Data Storage and Security
           </h2>
-          <p className="leading-relaxed">
+          <p className="leading-relaxed mb-4">
             We implement appropriate security measures to protect your personal
             information. However, please note that no method of transmission
             over the Internet or electronic storage is 100% secure. We strive to
             use commercially acceptable means to protect your data.
+          </p>
+          <p className="leading-relaxed">
+            All collected data is stored securely, used strictly for
+            reach-tracking and usage-analytics purposes, and never shared with
+            third parties.
           </p>
         </section>
 
