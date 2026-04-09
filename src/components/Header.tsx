@@ -1,5 +1,5 @@
 "use client";
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { AboutProfile } from '@/types/api';
@@ -9,6 +9,11 @@ interface HeaderProps {
 }
 
 export const Header = ({ about }: HeaderProps) => {
+  const { scrollY } = useScroll();
+  const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 0.95]);
+  const headerBlur = useTransform(scrollY, [0, 50], ["8px", "16px"]);
+  const headerBorder = useTransform(scrollY, [0, 50], ["rgba(35, 53, 84, 0)", "rgba(35, 53, 84, 1)"]);
+  
   const links = about?.links || {};
   const displayName = about?.firstname || about?.username || 'Profile';
   const socialLinks = [
@@ -19,26 +24,37 @@ export const Header = ({ about }: HeaderProps) => {
   ].filter((link) => Boolean(link.href));
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-[#0A192F]/80 border-b border-[#233554]">
+    <motion.nav 
+      className="fixed top-0 left-0 right-0 z-50 bg-[#0A192F]"
+      style={{ 
+        opacity: headerOpacity, 
+        backdropFilter: `blur(${headerBlur})`,
+        borderBottom: `1px solid ${headerBorder}` 
+      }}
+    >
       <div className="container mx-auto px-4 md:px-6 py-4">
         <div className="flex justify-between items-center">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <Link href="/" className="text-2xl font-bold text-[#64FFDA]">
+            <Link href="/" className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#64FFDA] to-[#CCD6F6]/60 hover:from-[#64FFDA] hover:to-[#64FFDA] transition-all duration-300">
               {displayName}
+              <span className="text-[#64FFDA]">.</span>
             </Link>
           </motion.div>
           <div className="flex items-center gap-4 md:gap-6">
-            {socialLinks.map((social) => (
+            {socialLinks.map((social, i) => (
               <motion.a
                 key={social.key}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ scale: 1.1, rotate: 5, y: -2 }}
+                className="text-[#8892B0] hover:text-[#64FFDA] p-2 hover:bg-[#64FFDA]/10 rounded-lg transition-colors"
                 aria-label={social.label}
               >
                 {social.icon}
@@ -47,6 +63,6 @@ export const Header = ({ about }: HeaderProps) => {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };

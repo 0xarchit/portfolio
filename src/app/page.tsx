@@ -1,13 +1,25 @@
 export const runtime = 'edge';
 
+import dynamic from "next/dynamic";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { About } from "@/components/About";
-import { Skills } from "@/components/Skills";
-import { Projects } from "@/components/Projects";
-import { AnimatedCursor } from "@/components/AnimatedCursor";
-import { Footer } from "@/components/Footer";
 import { AboutProfile, AllPortfolioData } from "@/types/api";
+
+const AnimatedCursor = dynamic(() =>
+  import("@/components/AnimatedCursor").then((mod) => mod.AnimatedCursor)
+);
+const About = dynamic(() =>
+  import("@/components/About").then((mod) => mod.About)
+);
+const Skills = dynamic(() =>
+  import("@/components/Skills").then((mod) => mod.Skills)
+);
+const Projects = dynamic(() =>
+  import("@/components/Projects").then((mod) => mod.Projects)
+);
+const Footer = dynamic(() =>
+  import("@/components/Footer").then((mod) => mod.Footer)
+);
 
 const FALLBACK_ABOUT: AboutProfile = {
   firstname: "",

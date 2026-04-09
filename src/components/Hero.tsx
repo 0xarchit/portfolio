@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Blob } from './Blob';
-import { Download } from 'lucide-react';
+import { Download, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { AboutProfile } from '../types/api';
 import {
@@ -21,65 +21,79 @@ export const Hero = ({ about }: HeroProps) => {
 
 
   return (
-    <section className="min-h-screen flex items-center relative overflow-hidden pt-40 md:pt-20">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
       <Blob />
-      <div className="container relative z-10 mx-auto px-4 md:px-6">
+      
+      {/* Decorative Lights */}
+      <div className="absolute top-1/3 left-1/4 -translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-[#64FFDA]/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 translate-y-1/2 translate-x-1/2 w-96 h-96 bg-[#233554]/40 blur-[150px] rounded-full pointer-events-none" />
+
+      <div className="container relative z-10 mx-auto px-4 md:px-6 flex min-h-[80vh] flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="max-w-4xl"
         >
-          <motion.span
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-[#64FFDA] font-mono mb-4 block"
+            className="flex items-center gap-3 mb-6"
           >
-            Hi, my name is
-          </motion.span>
+            <span className="h-[2px] w-12 bg-[#64FFDA]"></span>
+            <span className="text-[#64FFDA] font-mono tracking-wide text-sm md:text-base cursor-default">
+              Hi, my name is
+            </span>
+          </motion.div>
+          
           <motion.h1
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-4xl md:text-7xl font-bold mb-4 text-[#CCD6F6]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 20 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 text-[#CCD6F6] tracking-tight"
           >
-            {about.firstname}.
+            {about.firstname}{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#64FFDA] to-[#CCD6F6]/50">
+              {about.lastname}.
+            </span>
           </motion.h1>
+          
           <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-3xl md:text-6xl font-bold mb-6 text-[#8892B0]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, type: "spring", stiffness: 200, damping: 20 }}
+            className="text-3xl md:text-5xl lg:text-6xl font-bold mb-8 text-[#8892B0] leading-tight"
           >
             {about.title}
           </motion.h2>
+          
           <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg md:text-xl text-[#c9cfdf] mb-8 max-w-2xl"
+            className="text-lg md:text-xl text-[#8892B0] mb-12 max-w-2xl leading-relaxed"
           >
             {about.bio}
           </motion.p>
+          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-wrap items-center gap-4 md:gap-6"
           >
             <Link
               href="#projects"
-              className="w-full sm:w-auto px-6 py-3 border-2 border-[#64FFDA] text-[#64FFDA] hover:bg-[#64FFDA]/10 rounded-lg font-semibold transition-colors text-center"
+              className="group relative px-8 py-4 bg-[#64FFDA] text-[#0A192F] font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(100,255,218,0.4)]"
             >
-              View Projects
+              <div className="absolute inset-0 w-full h-full bg-white/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out" />
+              <span className="relative flex items-center gap-2">
+                Check out my work
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </span>
             </Link>
-            <Link
-              href="/contact-us"
-              className="w-full sm:w-auto px-6 py-3 bg-[#64FFDA]/10 text-[#64FFDA] hover:bg-[#64FFDA]/20 rounded-lg font-semibold transition-colors text-center"
-            >
-              Contact Me
-            </Link>
+            
             {about.links.resume && (
               <motion.a
                 href={about.links.resume}
@@ -150,14 +164,21 @@ export const Hero = ({ about }: HeroProps) => {
                   );
                 }
                 }}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#64FFDA] text-[#0A192F] hover:bg-[#64FFDA]/90 rounded-lg font-semibold transition-colors group cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="group relative px-8 py-4 backdrop-blur-sm bg-transparent border-2 border-[#64FFDA]/30 text-[#64FFDA] hover:border-[#64FFDA] hover:bg-[#64FFDA]/5 font-bold rounded-xl transition-all duration-300 hover:scale-105"
               >
-                <Download className="w-5 h-5 transition-transform group-hover:-translate-y-1" />
-                Download Resume
+                <span className="flex items-center gap-2">
+                  <Download className="w-4 h-4 transition-transform group-hover:-translate-y-1" />
+                  Resume
+                </span>
               </motion.a>
             )}
+            
+            <Link
+              href="/contact-us"
+              className="text-[#8892B0] hover:text-[#CCD6F6] font-mono border-b border-transparent hover:border-[#64FFDA] pb-1 ml-2 transition-all"
+            >
+              Contact Me
+            </Link>
           </motion.div>
         </motion.div>
       </div>
