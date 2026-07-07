@@ -1,4 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sendTelegramMessage } from '../utils/telegram';
+import {
+  formatNavigatorInfo,
+  formatAdvancedTelemetry,
+  formatUserIdentification,
+  formatSessionStats,
+} from '../utils/telemetry';
 
 export const runtime = 'edge';
 
@@ -9,162 +16,42 @@ const rateLimit = new Map<string, { count: number; lastReset: number }>();
 
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000;
 const MAX_REQUESTS = 5;
-const TELEMETRY_PREVIEW_LIMIT = 8;
-const TELEGRAM_MAX_MESSAGE_LENGTH = 3500;
-
-const summarizeEvents = (
-  items: unknown,
-  formatter: (value: Record<string, unknown>) => string
-) => {
-  if (!Array.isArray(items) || items.length === 0) {
-    return '  (None)';
-  }
-
-  return items
-    .slice(-TELEMETRY_PREVIEW_LIMIT)
-    .map((item) =>
-      item && typeof item === 'object'
-        ? `  - ${formatter(item as Record<string, unknown>)}`
-        : '  - (Invalid event)'
-    )
-    .join('\n');
-};
-
-const splitTelegramMessage = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) {
-    return [text];
-  }
-
-  const chunks: string[] = [];
-  const lines = text.split('\n');
-  let current = '';
-
-  for (const line of lines) {
-    const candidate = current ? `${current}\n${line}` : line;
-    if (candidate.length <= maxLength) {
-      current = candidate;
-      continue;
-    }
-
-    if (current) {
-      chunks.push(current);
-      current = '';
-    }
-
-    if (line.length <= maxLength) {
-      current = line;
-      continue;
-    }
-
-    let start = 0;
-    while (start < line.length) {
-      chunks.push(line.slice(start, start + maxLength));
-      start += maxLength;
-    }
-  }
-
-  if (current) {
-    chunks.push(current);
-  }
-
-  return chunks;
-};
-
-const sendTelegramChunk = async (
-  telegramUrl: string,
-  chatId: string,
-  text: string,
-  useMarkdown: boolean
-) => {
-  return fetch(telegramUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text,
-      ...(useMarkdown ? { parse_mode: 'Markdown' } : {}),
-    }),
-  });
-};
 
 export async function POST(req: NextRequest) {
   try {
-    
     const originHeader = req.headers.get('origin');
     const refererHeader = req.headers.get('referer');
-    
     const allowedHosts = ['0xarchit.is-a.dev', 'localhost', '127.0.0.1'];
-
     const verifyHost = (url: string | null) => {
         if (!url) return false;
-        try {
-            const parsed = new URL(url);
-            return allowedHosts.includes(parsed.hostname);
-        } catch {
-            return false;
-        }
+        try { return allowedHosts.includes(new URL(url).hostname); } catch { return false; }
     };
-
-    const isAllowed = verifyHost(originHeader) || verifyHost(refererHeader);
-
-    if (!isAllowed) {
+    if (!verifyHost(originHeader) && !verifyHost(refererHeader)) {
       return NextResponse.json({ error: 'Unauthorized origin' }, { status: 403 });
     }
 
     const ip = req.headers.get('x-forwarded-for') || 'unknown';
-    
-    
     const now = Date.now();
     const userLimit = rateLimit.get(ip) || { count: 0, lastReset: now };
-
-    if (now - userLimit.lastReset > RATE_LIMIT_WINDOW) {
-      userLimit.count = 0;
-      userLimit.lastReset = now;
-    }
-
+    if (now - userLimit.lastReset > RATE_LIMIT_WINDOW) { userLimit.count = 0; userLimit.lastReset = now; }
     if (userLimit.count >= MAX_REQUESTS) {
-      return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
-        { status: 429 }
-      );
+      return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
     }
-
     userLimit.count++;
     rateLimit.set(ip, userLimit);
 
     const data = await req.json();
-    const {
-      name,
-      email,
-      telegram,
-      message,
-      company_not_required,
-      startTime,
-      captchaToken,
-      sessionStats,
-      requestTimestampMs,
-      submitPoint,
-      clientContext,
-    } = data;
+    const { name, email, telegram, message, company_not_required, startTime, captchaToken, sessionStats, requestTimestampMs, submitPoint, clientContext } = data;
 
-    
-    if (company_not_required) {
-      return NextResponse.json({ success: true });
-    }
+    if (company_not_required) return NextResponse.json({ success: true });
 
-    
     const submissionTime = Date.now();
     const timeToSubmit = submissionTime - (startTime || submissionTime);
-    
-    
     if (timeToSubmit < 2000) {
       console.warn(`Spam detected: Submission too fast (${timeToSubmit}ms)`);
       return NextResponse.json({ success: true });
     }
 
-    
     let captchaScore = 0;
     const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
     if (CAPTCHA_SECRET && captchaToken) {
@@ -172,150 +59,55 @@ export async function POST(req: NextRequest) {
          const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${CAPTCHA_SECRET}&response=${captchaToken}`;
          const verifyRes = await fetch(verifyUrl, { method: 'POST' });
          const verifyData = await verifyRes.json();
-         if (verifyData.success) {
-            captchaScore = verifyData.score;
-         } else {
-             console.warn('Captcha verification failed:', verifyData['error-codes']);
-         }
-       } catch (e) {
-         console.warn('Captcha error:', e);
-       }
+         if (verifyData.success) captchaScore = verifyData.score;
+         else console.warn('Captcha verification failed:', verifyData['error-codes']);
+       } catch (e) { console.warn('Captcha error:', e); }
     }
-
-    
     if (CAPTCHA_SECRET && captchaScore < 0.3) {
-        console.warn(`Spam detected: Low Captcha Score (${captchaScore})`);
-        return NextResponse.json({ success: true });
+      console.warn(`Spam detected: Low Captcha Score (${captchaScore})`);
+      return NextResponse.json({ success: true });
     }
 
     if (!name || !email || !message) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-
     if (message.length > 1000) {
-      return NextResponse.json(
-        { error: 'Message exceeds 1000 characters' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Message exceeds 1000 characters' }, { status: 400 });
     }
 
-    
-    
     const userAgent = req.headers.get('user-agent') || 'Unknown';
-    
     let location = req.headers.get('cf-ipcountry') || req.headers.get('x-vercel-ip-country') || 'Unknown';
     let city = req.headers.get('cf-ipcity') || req.headers.get('x-vercel-ip-city') || 'Unknown';
     let region = req.headers.get('cf-region-code') || req.headers.get('x-vercel-ip-country-region') || 'Unknown';
     let ipDetails = '';
-    
-    
     const headers = {
         referer: req.headers.get('referer') || 'N/A',
         acceptLanguage: req.headers.get('accept-language') || 'N/A',
         secChUaPlatform: req.headers.get('sec-ch-ua-platform') || 'N/A',
         secChUaMobile: req.headers.get('sec-ch-ua-mobile') || 'N/A',
         connection: req.headers.get('connection') || 'N/A',
-        
         cfRay: req.headers.get('cf-ray') || 'N/A'
     };
-    
-    
     const realIp = req.headers.get('cf-connecting-ip') || ip;
 
-    
     try {
       const IPINFO_TOKEN = process.env.IPINFO_TOKEN;
       if (IPINFO_TOKEN && realIp !== 'unknown' && realIp !== '::1') {
-         
          const ipRes = await fetch(`https://ipinfo.io/${realIp}?token=${IPINFO_TOKEN}`);
          const details = await ipRes.json();
-         
          if (details && !details.error) {
             city = details.city || city;
             location = details.country || location;
             region = details.region || region;
-            
-            ipDetails = `
-            \n🌍 *Enhanced IP Info:*
-            🏢 *Org/ISP:* ${details.org || 'N/A'}
-            🏷️ *Hostname:* ${details.hostname || 'N/A'}
-            📍 *Coordinates:* ${details.loc || 'N/A'}
-            ⏰ *Timezone:* ${details.timezone || 'N/A'}
-            📮 *Postal:* ${details.postal || 'N/A'}
-            `;
-            
-            if (details.asn) {
-                 ipDetails += `\n🛡️ *ASN:* ${details.asn.asn} (${details.asn.name})`;
-            }
-            if (details.abuse) {
-                ipDetails += `\n⚠️ *Abuse Info:* ${details.abuse.address} (${details.abuse.phone || 'No Phone'})`;
-            }
+            ipDetails = `\n🌍 *Enhanced IP Info:*\n🏢 *Org/ISP:* ${details.org || 'N/A'}\n🏷️ *Hostname:* ${details.hostname || 'N/A'}\n📍 *Coordinates:* ${details.loc || 'N/A'}\n⏰ *Timezone:* ${details.timezone || 'N/A'}\n📮 *Postal:* ${details.postal || 'N/A'}`;
+            if (details.asn) ipDetails += `\n🛡️ *ASN:* ${details.asn.asn} (${details.asn.name})`;
+            if (details.abuse) ipDetails += `\n⚠️ *Abuse Info:* ${details.abuse.address} (${details.abuse.phone || 'No Phone'})`;
          }
       }
-    } catch (e) {
-      console.warn('IPInfo lookup failed:', e);
-    }
-
+    } catch (e) { console.warn('IPInfo lookup failed:', e); }
 
     const nav = sessionStats?.navigatorDetails;
     const fp = sessionStats?.fingerprintComponents;
-    const buttonClicks = sessionStats?.buttonClicks;
-    const fieldEvents = sessionStats?.fieldEvents;
-    const downloadEvents = sessionStats?.downloadEvents;
-    const errorCodes = sessionStats?.errorCodes;
-
-    const navigatorInfo = nav ? `
-💻 *Navigator Details:*
-  • UA: ${nav.userAgent}
-  • Platform: ${nav.platform}
-  • Language: ${nav.language} (${nav.languages?.join(', ') || ''})
-  • Cores: ${nav.hardwareConcurrency} | Memory: ${nav.deviceMemory || '?'} GB
-  • Vendor: ${nav.vendor}
-  • Touch Points: ${nav.maxTouchPoints}
-  ${nav.connection ? `• Network: ${nav.connection.effectiveType} (Down: ${nav.connection.downlink}Mbps, RTT: ${nav.connection.rtt}ms)` : ''}
-    ` : '';
-
-    const buttonClickSummary = summarizeEvents(buttonClicks, (item) => {
-      const target = typeof item.target === 'string' ? item.target : 'unknown';
-      const x = typeof item.x === 'number' ? item.x : 0;
-      const y = typeof item.y === 'number' ? item.y : 0;
-      const timestamp =
-        typeof item.timestampMs === 'number' ? item.timestampMs : Date.now();
-      const path = typeof item.path === 'string' ? item.path : 'unknown';
-      return `[${path}] ${target} @ (${x}, ${y}) at ${timestamp}`;
-    });
-
-    const fieldEventSummary = summarizeEvents(fieldEvents, (item) => {
-      const field = typeof item.field === 'string' ? item.field : 'unknown';
-      const type = typeof item.type === 'string' ? item.type : 'unknown';
-      const timestamp =
-        typeof item.timestampMs === 'number' ? item.timestampMs : Date.now();
-      const path = typeof item.path === 'string' ? item.path : 'unknown';
-      return `[${path}] ${type.toUpperCase()} ${field} at ${timestamp}`;
-    });
-
-    const downloadEventSummary = summarizeEvents(downloadEvents, (item) => {
-      const resource =
-        typeof item.resource === 'string' ? item.resource : 'unknown';
-      const status = typeof item.status === 'string' ? item.status : 'unknown';
-      const timestamp =
-        typeof item.timestampMs === 'number' ? item.timestampMs : Date.now();
-      const errorCode =
-        typeof item.errorCode === 'string' ? ` (error: ${item.errorCode})` : '';
-      return `${resource} ${status.toUpperCase()} at ${timestamp}${errorCode}`;
-    });
-
-    const errorCodeSummary = summarizeEvents(errorCodes, (item) => {
-      const code = typeof item.code === 'string' ? item.code : 'UNKNOWN';
-      const context =
-        typeof item.context === 'string' ? item.context : 'unspecified';
-      const timestamp =
-        typeof item.timestampMs === 'number' ? item.timestampMs : Date.now();
-      return `${code} in ${context} at ${timestamp}`;
-    });
 
     const formattedMessage = `
 📩 *New Contact Form Submission*
@@ -347,26 +139,14 @@ Submit Coordinates: ${submitPoint?.x ?? 'N/A'}, ${submitPoint?.y ?? 'N/A'}
 
 ---
 🖱️ *Session Stats:*
-Time on Page: ${(sessionStats?.totalTime / 1000).toFixed(1) || '0'}s
-Scroll Depth: ${sessionStats?.maxScroll || 0}%
-Screen Res: ${sessionStats?.screenResolution || 'N/A'}
-Copies: 
-${(sessionStats?.copies && Array.isArray(sessionStats.copies) && sessionStats.copies.length > 0) ? sessionStats.copies.map((c: string) => `  - ${c}`).join('\n') : '  (None)'}
-Clicks: 
-${(sessionStats?.clicks && Array.isArray(sessionStats.clicks) && sessionStats.clicks.length > 0) ? sessionStats.clicks.map((c: string) => `  - ${c}`).join('\n') : '  (None)'}
-Focused: 
-${(sessionStats?.focused && Array.isArray(sessionStats.focused) && sessionStats.focused.length > 0) ? sessionStats.focused.map((c: string) => `  - ${c}`).join('\n') : '  (None)'}
-Path History:
-${(sessionStats?.paths && Array.isArray(sessionStats.paths)) ? sessionStats.paths.join(' -> ') : 'Unknown'}
-Button Coordinates:
-${buttonClickSummary}
-Field Focus/Blur:
-${fieldEventSummary}
-Download Events:
-${downloadEventSummary}
-Error Codes:
-${errorCodeSummary}
+${formatSessionStats(sessionStats)}
 
+---
+🔍 *User Identification:*
+${formatUserIdentification(sessionStats)}
+---
+🧠 *Advanced Telemetry:*
+${formatAdvancedTelemetry(sessionStats)}
 ---
 🕵️ *User Details:*
 IP: \`${ip}\`
@@ -374,76 +154,19 @@ Location: ${city}, ${region}, ${location}
 Device/Agent: ${userAgent}
 Screen Res: ${sessionStats?.screenResolution || 'N/A'}
 Platform: ${headers.secChUaPlatform} (Mobile: ${headers.secChUaMobile})
-${navigatorInfo}
+${formatNavigatorInfo(nav)}
 ${ipDetails}
 `;
 
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
         console.error('Telegram credentials missing');
-        
         return NextResponse.json({ error: 'Service temporarily unavailable' }, { status: 500 });
     }
 
-    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    
-    
-    const chunks = splitTelegramMessage(
-      formattedMessage,
-      TELEGRAM_MAX_MESSAGE_LENGTH
-    );
-
-    for (let index = 0; index < chunks.length; index++) {
-      const chunk = chunks[index];
-      const totalParts = chunks.length;
-      const text =
-        totalParts > 1
-          ? `📨 *Part ${index + 1}/${totalParts}*\n\n${chunk}`
-          : chunk;
-      let telegramResponse = await sendTelegramChunk(
-        telegramUrl,
-        TELEGRAM_CHAT_ID,
-        text,
-        true
-      );
-
-      if (!telegramResponse.ok) {
-        const telegramError = await telegramResponse.text();
-        const shouldRetryAsPlainText = telegramError.includes(
-          "can't parse entities"
-        );
-
-        if (shouldRetryAsPlainText) {
-          const plainText =
-            totalParts > 1 ? `Part ${index + 1}/${totalParts}\n\n${chunk}` : chunk;
-          telegramResponse = await sendTelegramChunk(
-            telegramUrl,
-            TELEGRAM_CHAT_ID,
-            plainText,
-            false
-          );
-        } else {
-          console.error(
-            `Telegram API Error (part ${index + 1}/${totalParts}):`,
-            telegramError
-          );
-        }
-      }
-
-      if (!telegramResponse.ok) {
-        console.error(
-          `Telegram API Error (part ${index + 1}/${totalParts}):`,
-          await telegramResponse.text()
-        );
-        throw new Error('Failed to send telegram message');
-      }
-    }
-
+    await sendTelegramMessage(formattedMessage);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Contact form error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

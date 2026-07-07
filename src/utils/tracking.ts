@@ -31,9 +31,93 @@ export const readSessionStats = (): Record<string, unknown> => {
   }
 };
 
+const TRIMMABLE_KEYS_LOW = ['visibilityTimeline', 'focusTimeline', 'dpiChanges', 'networkChanges', 'exitEvents'];
+const TRIMMABLE_KEYS_MED = ['resourceLoads', 'buttonClicks', 'fieldEvents', 'longTasks'];
+const MAX_STORAGE_BYTES = 4.5 * 1024 * 1024; // 4.5MB threshold (safe under 5MB)
+
+const measureSize = (obj: Record<string, unknown>): number => {
+  try {
+    return new Blob([JSON.stringify(obj)]).size;
+  } catch {
+    return 0;
+  }
+};
+
+const trimStats = (stats: Record<string, unknown>, maxBytes: number): Record<string, unknown> => {
+  let current = { ...stats };
+  if (measureSize(current) <= maxBytes) return current;
+
+  // Phase 1: trim low-priority arrays to 5 items
+  for (const key of TRIMMABLE_KEYS_LOW) {
+    if (Array.isArray(current[key]) && current[key]!.length > 5) {
+      current = { ...current, [key]: current[key]!.slice(-5) };
+    }
+  }
+  if (measureSize(current) <= maxBytes) return current;
+
+  // Phase 2: drop low-priority entirely
+  for (const key of TRIMMABLE_KEYS_LOW) {
+    if (current[key]) {
+      current = { ...current, [key]: [] };
+    }
+  }
+  if (measureSize(current) <= maxBytes) return current;
+
+  // Phase 3: trim medium-priority to 10 items
+  for (const key of TRIMMABLE_KEYS_MED) {
+    if (Array.isArray(current[key]) && current[key]!.length > 10) {
+      current = { ...current, [key]: current[key]!.slice(-10) };
+    }
+  }
+  if (measureSize(current) <= maxBytes) return current;
+
+  // Phase 4: drop medium-priority entirely
+  for (const key of TRIMMABLE_KEYS_MED) {
+    if (current[key]) {
+      current = { ...current, [key]: [] };
+    }
+  }
+  if (measureSize(current) <= maxBytes) return current;
+
+  // Phase 5: trim clicks/focused/copies to 10
+  for (const key of ['clicks', 'focused', 'copies']) {
+    if (Array.isArray(current[key]) && current[key]!.length > 10) {
+      current = { ...current, [key]: current[key]!.slice(-10) };
+    }
+  }
+  if (measureSize(current) <= maxBytes) return current;
+
+  // Phase 6: drop all arrays except essential stats
+  const essential = ['visitorId', 'fingerprintComponents', 'startTime', 'paths', 'screenResolution', 'localTimezone', 'referrer', 'navigatorDetails'];
+  const result: Record<string, unknown> = {};
+  for (const key of essential) {
+    if (current[key] !== undefined) result[key] = current[key];
+  }
+  result.lastEventTimestamp = current.lastEventTimestamp;
+  result._trimmed = true;
+  return result;
+};
+
 export const writeSessionStats = (stats: Record<string, unknown>) => {
   if (typeof window === 'undefined') return;
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+      const trimmed = trimStats(stats, MAX_STORAGE_BYTES);
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+      } catch {
+        // Last resort: clear and write minimal
+        sessionStorage.clear();
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          visitorId: stats.visitorId,
+          startTime: stats.startTime,
+          _emergency: true,
+        }));
+      }
+    }
+  }
 };
 
 export const updateSessionStats = (
