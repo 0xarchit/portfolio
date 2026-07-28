@@ -13,6 +13,7 @@
     "devstart": "npm run build && npm run start"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.2.0",
     "axios": "^1.16.0",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.562.0",

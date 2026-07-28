@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     } catch (e) { console.warn('IPInfo lookup failed:', e); }
 
     const nav = sessionStats?.navigatorDetails;
-    const fp = sessionStats?.fingerprintComponents;
+    const fp = sessionStats?.fingerprintComponents as Record<string, { value: unknown }> | undefined;
 
     const formattedMessage = `
 📩 *New Contact Form Submission*
@@ -122,8 +122,8 @@ ${message}
 ---
 🛡️ *Security & Fingerprint:*
 🆔 *Visitor ID:* \`${sessionStats?.visitorId || 'Generating...'}\`
-🎨 *Canvas Hash:* \`${fp?.canvas ? 'Matched' : 'N/A'}\` (Truncated)
-🖥️ *GPU:* ${fp?.webgl || 'N/A'}
+🎨 *Canvas:* \`${fp?.canvas?.value ? 'Matched' : 'N/A'}\`
+🖥️ *GPU:* ${fp?.webglVendorAndRenderer?.value || fp?.webgl?.value || 'N/A'}
 
 Valid Origin: ✅
 Honeypot: ✅ (Empty)

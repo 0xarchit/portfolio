@@ -59,11 +59,7 @@ export interface ResourceLoadEntry {
 
 export interface SessionStats {
   visitorId?: string;
-  fingerprintComponents?: {
-    canvas: string;
-    webgl: string;
-    hardware: string;
-  };
+  fingerprintComponents?: Record<string, unknown>;
   clicks: string[];
   focused: string[];
   copies: string[];
