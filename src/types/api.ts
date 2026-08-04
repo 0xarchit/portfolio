@@ -45,8 +45,15 @@ export interface AboutProfile {
   interests: string[];
 }
 
+export interface CertificatesData {
+  shown: string[];
+  certs: Record<string, string>;
+}
+
 export interface AllPortfolioData {
   about: AboutProfile;
   projects: Project[];
   skills: SkillCategory[];
+  certificates?: CertificatesData;
 }
+

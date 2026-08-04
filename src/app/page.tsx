@@ -17,6 +17,9 @@ const Skills = dynamic(() =>
 const Projects = dynamic(() =>
   import("@/components/Projects").then((mod) => mod.Projects)
 );
+const Certificates = dynamic(() =>
+  import("@/components/Certificates").then((mod) => mod.Certificates)
+);
 const Footer = dynamic(() =>
   import("@/components/Footer").then((mod) => mod.Footer)
 );
@@ -57,6 +60,7 @@ const normalizeAllData = (data: AllPortfolioData): AllPortfolioData => {
       },
     })),
     skills: data.skills || [],
+    certificates: data.certificates || { shown: [], certs: {} },
   };
 };
 
@@ -77,12 +81,12 @@ async function getData() {
     return normalizeAllData(allData);
   } catch (error) {
     console.error('Error fetching data:', error);
-    return { about: FALLBACK_ABOUT, skills: [], projects: [] };
+    return { about: FALLBACK_ABOUT, skills: [], projects: [], certificates: { shown: [], certs: {} } };
   }
 }
 
 export default async function Home() {
-  const { about, skills, projects } = await getData();
+  const { about, skills, projects, certificates } = await getData();
 
   return (
     <>
@@ -93,6 +97,7 @@ export default async function Home() {
         <About about={about} />
         <Skills skills={skills} />
         <Projects projects={projects} />
+        <Certificates certificates={certificates} />
       </main>
       <Footer about={about} />
     </>

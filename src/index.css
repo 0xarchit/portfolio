@@ -73,7 +73,7 @@
   transform: translate3d(0, 0, 0);
   margin-left: -12px;
   margin-top: -12px;
-  z-index: 9999;
+  z-index: 999999;
   filter: drop-shadow(0 0 5px #39ff14);
   transition: opacity 0.2s ease-in-out, filter 0.2s ease-in-out, transform 0.08s linear;
   opacity: 0;
