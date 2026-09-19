@@ -33,13 +33,17 @@ export default async function BlogIndex() {
       {posts.length === 0 ? (
         <p className="text-[#8892B0]">No posts published yet. Check back soon.</p>
       ) : (
-        <div className="columns-1 md:columns-2 gap-6 space-y-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {posts.map((post) => (
-            <div key={post.id} className="break-inside-avoid">
+            <div
+              key={post.id}
+              className="w-full sm:w-[calc(50%-12px)] max-w-md flex-grow-0 flex-shrink-0"
+            >
               <BlogCard post={post} />
             </div>
           ))}
         </div>
+
       )}
     </PageLayout>
   );

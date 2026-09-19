@@ -62,13 +62,13 @@ export const Blog = ({ posts }: BlogProps) => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6"
+          className="flex flex-wrap justify-center gap-6"
         >
           {featured.map((post) => (
             <motion.div
               key={post.id}
               variants={itemVariants}
-              className="break-inside-avoid h-full"
+              className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-md flex-grow-0 flex-shrink-0"
             >
               <BlogCard post={post} />
             </motion.div>
