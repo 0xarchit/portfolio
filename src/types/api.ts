@@ -69,6 +69,6 @@ export interface BlogPost {
 }
 
 export interface BlogPostFull extends BlogPost {
-  body: import("@portabletext/types").PortableTextBlock[];
+  body: string;
 }
 

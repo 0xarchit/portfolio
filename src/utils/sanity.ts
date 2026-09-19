@@ -1,14 +1,13 @@
 import { BlogPost, BlogPostFull } from "@/types/api";
-import type { PortableTextBlock } from "@portabletext/types";
 
 const PROJECT_ID = process.env.SANITY_PROJECT_ID || "";
 const DATASET = process.env.SANITY_DATASET || "production";
-const API_VERSION = "v2024-01-01";
+const API_VERSION = "v2026-09-19";
 
 const LIST_PROJECTION =
   '{ "id": _id, title, "slug": slug.current, excerpt, "coverImage": coverImage.asset->url, publishedAt, tags }';
 const POST_PROJECTION =
-  '{ "id": _id, title, "slug": slug.current, excerpt, "coverImage": coverImage.asset->url, publishedAt, tags, "body": body[]{ ..., _type == "image" => { "url": asset->url } } }';
+  '{ "id": _id, title, "slug": slug.current, excerpt, "coverImage": coverImage.asset->url, publishedAt, tags, body }';
 
 interface SanityPost {
   id: string;
@@ -18,7 +17,7 @@ interface SanityPost {
   coverImage?: string;
   publishedAt?: string;
   tags?: string[];
-  body?: PortableTextBlock[];
+  body?: string;
 }
 
 function mapSanityPost(doc: SanityPost): BlogPost {
@@ -79,5 +78,8 @@ export async function getPost(slug: string): Promise<BlogPostFull | null> {
   if (!result) {
     return null;
   }
-  return { ...mapSanityPost(result), body: result.body || [] };
+  return {
+    ...mapSanityPost(result),
+    body: typeof result.body === "string" ? result.body : "",
+  };
 }

@@ -14,8 +14,6 @@
   },
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^5.2.0",
-    "@portabletext/react": "^8.0.1",
-    "@portabletext/types": "^4.0.2",
     "axios": "^1.18.1",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.562.0",
@@ -24,6 +22,8 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-google-recaptcha-v3": "^1.11.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "sharp": "^0.35.4"
   },
   "devDependencies": {
