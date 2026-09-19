@@ -2,6 +2,8 @@
 
 import Markdown, {type Components} from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 
 const components: Components = {
   h1: ({children}) => (
@@ -62,10 +64,10 @@ const components: Components = {
     </pre>
   ),
   code: ({className, children}) => {
-    const isBlock = /language-/.test(className || "");
+    const isBlock = /language-|hljs/.test(className || "");
     if (isBlock) {
       return (
-        <code className="font-mono text-sm text-[#CCD6F6]">{children}</code>
+        <code className={`${className || ""} font-mono text-sm`}>{children}</code>
       );
     }
     return (
@@ -98,7 +100,11 @@ interface PostBodyProps {
 export const PostBody = ({value}: PostBodyProps) => {
   return (
     <div className="post-body">
-      <Markdown remarkPlugins={[remarkGfm]} components={components}>
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+        components={components}
+      >
         {value}
       </Markdown>
     </div>

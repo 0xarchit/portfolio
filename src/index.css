@@ -122,3 +122,8 @@
   -moz-user-select: text;
   -ms-user-select: text;
 }
+
+.post-body pre code.hljs {
+  background: transparent;
+  padding: 0;
+}

@@ -69,7 +69,13 @@ export default async function BlogPostPage({ params }: PageProps) {
   const formattedDate = formatDate(post.date);
 
   return (
-    <PageLayout title={post.title} description={post.excerpt} about={about}>
+    <PageLayout
+      title={post.title}
+      description={post.excerpt}
+      about={about}
+      backHref="/blog"
+      backLabel="Back to Blog"
+    >
       <div className="flex flex-wrap items-center gap-3 mb-8 text-sm font-mono text-[#64FFDA]">
         {formattedDate && (
           <span className="inline-flex items-center gap-1.5">
