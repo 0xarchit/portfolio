@@ -57,6 +57,7 @@ export function Footer({ about }: FooterProps) {
   );
 
   const quickLinks = [
+    { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact-us" },
     { name: "Privacy Policy", href: "/privacy-policy" },

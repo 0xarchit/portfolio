@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { AboutProfile, AllPortfolioData } from "@/types/api";
+import { getTopPosts } from "@/utils/sanity";
 
 const AnimatedCursor = dynamic(() =>
   import("@/components/AnimatedCursor").then((mod) => mod.AnimatedCursor)
@@ -19,6 +20,9 @@ const Projects = dynamic(() =>
 );
 const Certificates = dynamic(() =>
   import("@/components/Certificates").then((mod) => mod.Certificates)
+);
+const Blog = dynamic(() =>
+  import("@/components/Blog").then((mod) => mod.Blog)
 );
 const Footer = dynamic(() =>
   import("@/components/Footer").then((mod) => mod.Footer)
@@ -86,7 +90,10 @@ async function getData() {
 }
 
 export default async function Home() {
-  const { about, skills, projects, certificates } = await getData();
+  const [{ about, skills, projects, certificates }, posts] = await Promise.all([
+    getData(),
+    getTopPosts(3),
+  ]);
 
   return (
     <>
@@ -97,6 +104,7 @@ export default async function Home() {
         <About about={about} />
         <Skills skills={skills} />
         <Projects projects={projects} />
+        <Blog posts={posts} />
         <Certificates certificates={certificates} />
       </main>
       <Footer about={about} />

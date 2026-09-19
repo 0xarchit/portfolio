@@ -44,6 +44,12 @@ export const Header = ({ about }: HeaderProps) => {
             </Link>
           </motion.div>
           <div className="flex items-center gap-4 md:gap-6">
+            <Link
+              href="/blog"
+              className="text-[#8892B0] hover:text-[#64FFDA] text-sm font-medium px-2 py-2 rounded-lg hover:bg-[#64FFDA]/10 transition-colors"
+            >
+              Blog
+            </Link>
             {socialLinks.map((social, i) => (
               <motion.a
                 key={social.key}
