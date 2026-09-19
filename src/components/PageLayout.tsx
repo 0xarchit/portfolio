@@ -12,9 +12,11 @@ interface PageLayoutProps {
   title: string;
   description?: string;
   about?: AboutProfile;
+  backHref?: string;
+  backLabel?: string;
 }
 
-export function PageLayout({ children, title, description, about }: PageLayoutProps) {
+export function PageLayout({ children, title, description, about, backHref = "/", backLabel = "Back to Home" }: PageLayoutProps) {
   return (
     <>
       <AnimatedCursor />
@@ -22,11 +24,11 @@ export function PageLayout({ children, title, description, about }: PageLayoutPr
       <main className="min-h-screen pt-24 pb-16 px-4">
         <div className="max-w-4xl mx-auto">
           <Link
-            href="/"
+            href={backHref}
             className="inline-flex items-center gap-2 text-[#64FFDA] hover:underline mb-8 transition-all hover:gap-3"
           >
             <ArrowLeft size={20} />
-            Back to Home
+            {backLabel}
           </Link>
 
           <motion.div

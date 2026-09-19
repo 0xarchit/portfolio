@@ -57,3 +57,18 @@ export interface AllPortfolioData {
   certificates?: CertificatesData;
 }
 
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverImage?: string;
+  date: string;
+  tags: string[];
+  readingTime?: string;
+}
+
+export interface BlogPostFull extends BlogPost {
+  body: string;
+}
+

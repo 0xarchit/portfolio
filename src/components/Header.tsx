@@ -1,6 +1,6 @@
 "use client";
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail, NotebookPen } from 'lucide-react';
 import Link from 'next/link';
 import { AboutProfile } from '@/types/api';
 
@@ -13,7 +13,7 @@ export const Header = ({ about }: HeaderProps) => {
   const headerOpacity = useTransform(scrollY, [0, 50], [0.8, 0.95]);
   const headerBlur = useTransform(scrollY, [0, 50], ["8px", "16px"]);
   const headerBorder = useTransform(scrollY, [0, 50], ["rgba(35, 53, 84, 0)", "rgba(35, 53, 84, 1)"]);
-  
+
   const links = about?.links || {};
   const displayName = about?.firstname || about?.username || 'Profile';
   const socialLinks = [
@@ -24,12 +24,12 @@ export const Header = ({ about }: HeaderProps) => {
   ].filter((link) => Boolean(link.href));
 
   return (
-    <motion.nav 
+    <motion.nav
       className="fixed top-0 left-0 right-0 z-50 bg-[#0A192F]"
-      style={{ 
-        opacity: headerOpacity, 
+      style={{
+        opacity: headerOpacity,
         backdropFilter: `blur(${headerBlur})`,
-        borderBottom: `1px solid ${headerBorder}` 
+        borderBottom: `1px solid ${headerBorder}`
       }}
     >
       <div className="container mx-auto px-4 md:px-6 py-4">
@@ -44,6 +44,14 @@ export const Header = ({ about }: HeaderProps) => {
             </Link>
           </motion.div>
           <div className="flex items-center gap-4 md:gap-6">
+            <Link
+              href="/blog"
+              className="text-[#8892B0] hover:text-[#64FFDA] p-2 hover:bg-[#64FFDA]/10 rounded-lg transition-colors"
+              aria-label="Blog"
+              title="Blog"
+            >
+              <NotebookPen className="w-5 h-5" />
+            </Link>
             {socialLinks.map((social, i) => (
               <motion.a
                 key={social.key}
