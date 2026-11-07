@@ -25,7 +25,7 @@ export function WebMcpProvider({ initialData, initialPosts }: WebMcpProviderProp
       // Fetch latest portfolio data if not passed
       if (!portfolioData) {
         try {
-          const res = await fetch("https://0xarchit.val.run/v1/all");
+          const res = await fetch("/api/portfolio");
           if (res.ok) {
             portfolioData = await res.json();
           }

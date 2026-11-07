@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 async function getAbout(): Promise<AboutProfile | undefined> {
-  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  const apiUrl = process.env.DATA_API_URL;
+  if (!apiUrl) {
+    return undefined;
+  }
   try {
     const res = await fetch(`${apiUrl}/v1/all`, { next: { revalidate: 300 } });
     if (!res.ok) {
