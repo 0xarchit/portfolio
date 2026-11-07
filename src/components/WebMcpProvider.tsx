@@ -41,34 +41,79 @@ export function WebMcpProvider({ initialData, initialPosts }: WebMcpProviderProp
         posts,
       });
 
-      // 1. Register with Document WebMCP interface (W3C standard)
-      if (typeof document !== "undefined" && document.modelContext?.registerTool) {
-        try {
-          for (const tool of tools) {
-            document.modelContext.registerTool(tool, { signal: controller.signal });
+      const toolMap = new Map<string, ModelContextTool>(
+        tools.map((t) => [t.name, t])
+      );
+
+      const modelContextBridge = {
+        registerTool: (t: ModelContextTool) => {
+          toolMap.set(t.name, t);
+        },
+        listTools: () => Array.from(toolMap.values()),
+        provideContext: ({ tools: tList }: { tools: ModelContextTool[] }) => {
+          for (const t of tList) toolMap.set(t.name, t);
+        },
+        executeTool: async (name: string, input: Record<string, unknown> = {}) => {
+          const tool = toolMap.get(name);
+          if (!tool) {
+            throw new Error(`WebMCP Tool "${name}" not found.`);
           }
-        } catch (e) {
-          console.warn("[WebMCP] document.modelContext registration warning:", e);
+          return await tool.execute(input);
+        },
+      };
+
+      // 1. Native or polyfilled document.modelContext (W3C standard)
+      if (typeof document !== "undefined") {
+        if (document.modelContext?.registerTool) {
+          try {
+            for (const tool of tools) {
+              document.modelContext.registerTool(tool, { signal: controller.signal });
+            }
+          } catch (e) {
+            console.warn("[WebMCP] document.modelContext registration warning:", e);
+          }
+        } else {
+          try {
+            Object.defineProperty(document, "modelContext", {
+              value: modelContextBridge,
+              configurable: true,
+              writable: true,
+            });
+          } catch {
+            (document as any).modelContext = modelContextBridge;
+          }
         }
       }
 
-      // 2. Register with Navigator WebMCP interface (early spec / browser flags)
-      if (typeof navigator !== "undefined" && navigator.modelContext?.registerTool) {
-        try {
-          for (const tool of tools) {
-            navigator.modelContext.registerTool(tool, { signal: controller.signal });
+      // 2. Native or polyfilled navigator.modelContext (early spec / browser flags)
+      if (typeof navigator !== "undefined") {
+        if (navigator.modelContext?.registerTool) {
+          try {
+            for (const tool of tools) {
+              navigator.modelContext.registerTool(tool, { signal: controller.signal });
+            }
+          } catch (e) {
+            console.warn("[WebMCP] navigator.modelContext registration warning:", e);
           }
-        } catch (e) {
-          console.warn("[WebMCP] navigator.modelContext registration warning:", e);
+        } else {
+          try {
+            Object.defineProperty(navigator, "modelContext", {
+              value: modelContextBridge,
+              configurable: true,
+              writable: true,
+            });
+          } catch {
+            try {
+              (navigator as any).modelContext = modelContextBridge;
+            } catch {
+              // Ignore if navigator is frozen
+            }
+          }
         }
       }
 
       // 3. Register global client bridge for extensions, testing, and automation agents
       if (typeof window !== "undefined") {
-        const toolMap = new Map<string, ModelContextTool>(
-          tools.map((t) => [t.name, t])
-        );
-
         window.__webmcp = {
           version: "1.0.0",
           tools: toolMap,
@@ -87,12 +132,7 @@ export function WebMcpProvider({ initialData, initialPosts }: WebMcpProviderProp
           },
         };
 
-        window.modelContext = {
-          registerTool: (t: ModelContextTool) => {
-            toolMap.set(t.name, t);
-          },
-          listTools: () => Array.from(toolMap.values()),
-        };
+        window.modelContext = modelContextBridge;
       }
     }
 
@@ -103,6 +143,14 @@ export function WebMcpProvider({ initialData, initialPosts }: WebMcpProviderProp
       controller.abort();
       if (typeof window !== "undefined") {
         delete window.__webmcp;
+        delete (window as any).modelContext;
+      }
+      if (typeof document !== "undefined") {
+        try {
+          delete (document as any).modelContext;
+        } catch {
+          // Ignore
+        }
       }
     };
   }, [initialData, initialPosts]);
