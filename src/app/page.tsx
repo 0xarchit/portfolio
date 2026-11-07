@@ -69,7 +69,11 @@ const normalizeAllData = (data: AllPortfolioData): AllPortfolioData => {
 };
 
 async function getData() {
-  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  const apiUrl = process.env.DATA_API_URL;
+  if (!apiUrl) {
+    console.error('DATA_API_URL environment variable is not defined');
+    return { about: FALLBACK_ABOUT, skills: [], projects: [], certificates: { shown: [], certs: {} } };
+  }
   
   try {
     const allRes = await fetch(`${apiUrl}/v1/all`, {

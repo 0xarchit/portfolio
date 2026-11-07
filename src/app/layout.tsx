@@ -2,6 +2,7 @@ import '../index.css';
 import './globals.css';
 import { ReCaptchaProvider } from '@/components/ReCaptchaProvider';
 import { SessionTracker } from '@/components/SessionTracker';
+import { WebMcpProvider } from '@/components/WebMcpProvider';
 import { Inter, Manrope } from 'next/font/google';
 
 const bodyFont = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body className="bg-gradient-to-br from-[#0A192F] via-[#112240] to-[#0A192F] text-[#E6F1FF] overflow-x-hidden min-h-screen min-w-full">
         <ReCaptchaProvider captchaKey={process.env.CAPTCHA_KEY}>
             <SessionTracker />
+            <WebMcpProvider />
             {children}
         </ReCaptchaProvider>
       </body>

@@ -5,7 +5,10 @@ const cleanValue = (value?: string) =>
   (value || "").replace(/`/g, "").trim();
 
 async function getAllData(): Promise<AllPortfolioData | null> {
-  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  const apiUrl = process.env.DATA_API_URL;
+  if (!apiUrl) {
+    return null;
+  }
   try {
     const res = await fetch(`${apiUrl}/v1/all`, {
       next: { revalidate: 300 },

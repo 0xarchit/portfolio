@@ -171,3 +171,65 @@ export const getClientContext = () => {
     localTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown',
   };
 };
+
+export const recordAgentToolCall = (
+  toolName: string,
+  params: unknown,
+  status: 'success' | 'error',
+  durationMs: number,
+  errorMessage?: string
+) => {
+  if (typeof window === 'undefined') return;
+
+  const event = {
+    toolName,
+    params,
+    status,
+    durationMs,
+    errorMessage: errorMessage || null,
+    timestampMs: Date.now(),
+  };
+
+  updateSessionStats((prev) => {
+    const list = Array.isArray(prev.agentToolCalls)
+      ? (prev.agentToolCalls as Record<string, unknown>[])
+      : [];
+    const count = typeof prev.agentCallCount === 'number' ? prev.agentCallCount + 1 : 1;
+    return {
+      ...prev,
+      isAgentSession: true,
+      agentProtocol: 'WebMCP',
+      agentCallCount: count,
+      agentToolCalls: [...list, event].slice(-50),
+      lastEventTimestamp: Date.now(),
+    };
+  });
+
+  // Background fire-and-forget notification to tracker endpoint
+  try {
+    const stats = readSessionStats();
+    fetch('/api/track-agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        toolName,
+        params,
+        status,
+        durationMs,
+        errorMessage: errorMessage || null,
+        timestampMs: Date.now(),
+        clientContext: getClientContext(),
+        sessionStats: {
+          visitorId: stats.visitorId,
+          agentCallCount: stats.agentCallCount,
+          lastEventTimestamp: stats.lastEventTimestamp,
+        },
+      }),
+      keepalive: true,
+    }).catch(() => {
+      // Non-blocking telemetry
+    });
+  } catch {
+    // Non-blocking
+  }
+};

@@ -9,7 +9,10 @@ const BASE_URL = "https://0xarchit.is-a.dev";
 const SITE_UPDATED = "2026-09-23";
 
 async function getProjectUrls(): Promise<string[]> {
-  const apiUrl = process.env.DATA_API_URL || "https://0xarchit.val.run";
+  const apiUrl = process.env.DATA_API_URL;
+  if (!apiUrl) {
+    return [];
+  }
   try {
     const res = await fetch(`${apiUrl}/v1/all`, { next: { revalidate: 300 } });
     if (!res.ok) {

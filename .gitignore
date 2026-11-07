@@ -32,3 +32,5 @@ dist-ssr
 .env.production.local
 
 /blog/
+
+.claude
