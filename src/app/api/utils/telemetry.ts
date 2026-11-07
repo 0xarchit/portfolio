@@ -307,3 +307,23 @@ ${formatDownloadEventSummary(s?.downloadEvents)}
 Error Codes:
 ${formatErrorCodeSummary(s?.errorCodes)}`;
 };
+
+export const formatAgentTelemetry = (payload: any) => {
+  const toolName = payload?.toolName || 'unknown_tool';
+  const durationMs = payload?.durationMs ?? 0;
+  const status = payload?.status === 'success' ? '✅ Success' : '❌ Failed';
+  const error = payload?.errorMessage ? `\n⚠️ *Error:* \`${payload.errorMessage}\`` : '';
+  const paramsStr = payload?.params ? JSON.stringify(payload.params, null, 2) : '{}';
+
+  return `
+🤖 *WebMCP Agent Tool Invoked!*
+• *Tool:* \`${toolName}\`
+• *Status:* ${status} (${durationMs}ms)
+• *Call Count:* ${payload?.sessionStats?.agentCallCount || 1}${error}
+
+📦 *Parameters Passed:*
+\`\`\`json
+${paramsStr.slice(0, 500)}
+\`\`\`
+`;
+};
